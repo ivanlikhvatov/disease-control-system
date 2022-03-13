@@ -1,0 +1,16 @@
+server:
+  port: 9000
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost/diseaseControlSystem
+    username: postgres
+    password:
+  jpa:
+    generate-ddl: true
+
+jwt:
+  token:
+    secret: jwtappdemo
+    duration:
+      minutes: 30
