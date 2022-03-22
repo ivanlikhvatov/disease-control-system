@@ -13,7 +13,8 @@ import java.util.Arrays;
 public enum ErrorContainer {
 
     AUTHENTICATION_ERROR(210, "Authentication error", HttpStatus.UNAUTHORIZED),
-    USER_NOT_FOUND(211, "User not found", HttpStatus.NOT_FOUND),
+    BAD_REQUEST(211, "Bad request", HttpStatus.BAD_REQUEST),
+    USER_NOT_FOUND(212, "User not found", HttpStatus.NOT_FOUND),
     OTHER(999, "Other Type of Error. See error message", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private static final ErrorContainer[] VALUES = values();

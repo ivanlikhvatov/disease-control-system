@@ -1,6 +1,5 @@
 package ru.example.config;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +21,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final static String ADMIN_ENDPOINTS = "/api/v1/admin/**";
     private final static String LOGIN_ENDPOINT = "/api/v1/auth/login";
+    private final static String REGISTRATION_ENDPOINT = "/api/v1/auth/registration";
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(LOGIN_ENDPOINT).permitAll()
+                .antMatchers(LOGIN_ENDPOINT, REGISTRATION_ENDPOINT).permitAll()
                 .antMatchers(ADMIN_ENDPOINTS).hasAuthority(Role.ADMIN.name())
                 .anyRequest().authenticated()
                 .and()

@@ -16,7 +16,6 @@ import ru.example.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Data
 @RequiredArgsConstructor
@@ -27,16 +26,6 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserInfoResponseDtoMapper mapper;
-
-    @Override
-    public User registerUser(User user) {
-
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(Set.of(Role.USER));
-        userRepository.save(user);
-
-        return user;
-    }
 
     @Override
     public List<User> getAllUsers() {

@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost/diseaseControlSystem
     username: postgres
-    password:
+    password: 202172Sev
   jpa:
     generate-ddl: true
 

@@ -6,8 +6,6 @@ import ru.example.dto.response.UserInfoDto;
 import java.util.List;
 
 public interface UserService {
-    User registerUser(User user);
-
     List<User> getAllUsers();
 
     UserInfoDto getUserInfoDtoByStudentNumber(String studentNumber);
