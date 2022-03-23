@@ -1,8 +1,8 @@
 package ru.example.dto.response;
 
 import lombok.Data;
-import ru.example.domain.Role;
-import ru.example.domain.Status;
+import ru.example.dao.entity.user.Role;
+import ru.example.dao.entity.Status;
 
 import java.time.LocalDateTime;
 import java.util.Set;

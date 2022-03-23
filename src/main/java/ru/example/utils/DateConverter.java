@@ -1,4 +1,4 @@
-package ru.example.util;
+package ru.example.utils;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

@@ -23,7 +23,7 @@ public class StatusResult {
         this.message = message;
     }
 
-    public static StatusResult okResult() {
+    public static StatusResult ok() {
         return new StatusResult(DEFAULT_SUCCESS_MESSAGE);
     }
 }

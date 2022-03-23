@@ -1,4 +1,4 @@
-package ru.example.domain;
+package ru.example.dao.entity.user;
 
 import org.springframework.security.core.GrantedAuthority;
 

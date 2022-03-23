@@ -8,11 +8,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import ru.example.domain.Role;
+import ru.example.dao.entity.user.Role;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
 import ru.example.security.JwtUserDetailsService;
-import ru.example.util.DateConverter;
+import ru.example.utils.DateConverter;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;

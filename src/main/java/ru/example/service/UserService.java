@@ -1,6 +1,6 @@
 package ru.example.service;
 
-import ru.example.domain.User;
+import ru.example.dao.entity.user.User;
 import ru.example.dto.response.UserInfoDto;
 
 import java.util.List;

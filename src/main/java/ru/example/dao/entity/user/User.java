@@ -1,8 +1,9 @@
-package ru.example.domain;
+package ru.example.dao.entity.user;
 
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import ru.example.dao.entity.Status;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -27,6 +28,10 @@ public class User {
     private String lastname;
 
     private String patronymic;
+
+    private String activationCode;
+
+    private LocalDateTime activationCodeExpirationDate;
 
     private Gender gender;
 

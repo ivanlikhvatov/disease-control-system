@@ -1,4 +1,4 @@
-package ru.example.domain;
+package ru.example.dao.entity;
 
 public enum Status {
     ACTIVE,

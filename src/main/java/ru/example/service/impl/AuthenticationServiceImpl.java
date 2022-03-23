@@ -20,7 +20,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 
     @Override
-    public LoginResponseDto login(AuthenticationRequestDto request) {
+    public LoginResponseDto loginUser(AuthenticationRequestDto request) {
         String studentNumber = request.getStudentNumber();
         String password = request.getPassword();
 

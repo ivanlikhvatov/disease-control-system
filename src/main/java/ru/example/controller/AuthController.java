@@ -1,10 +1,7 @@
 package ru.example.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.example.dto.request.AuthenticationRequestDto;
 import ru.example.dto.request.RegistrationRequestDto;
 import ru.example.dto.response.LoginResponseDto;
@@ -23,14 +20,25 @@ public class AuthController {
     private final RegistrationService registrationService;
 
     @PostMapping("/login")
-    public LoginResponseDto login(@RequestBody @Valid AuthenticationRequestDto request) {
-        return authenticationService.login(request);
+    public LoginResponseDto loginUser(@RequestBody @Valid AuthenticationRequestDto request) {
+        return authenticationService.loginUser(request);
     }
 
     @PostMapping("/registration")
-    public StatusResult registration(@RequestBody @Valid RegistrationRequestDto request) {
-        return registrationService.register(request);
+    public StatusResult registerUser(@RequestBody @Valid RegistrationRequestDto request) {
+        return registrationService.registerUser(request);
     }
+
+    @PostMapping("/code/resend")
+    public StatusResult resendActivationCode(@RequestParam String expiredActivationCode) {
+        return registrationService.resendActivationCode(expiredActivationCode);
+    }
+
+    @PostMapping("/activate")
+    public StatusResult activateUser(@RequestParam String activationCode) {
+        return registrationService.activateUser(activationCode);
+    }
+
 
 
 }

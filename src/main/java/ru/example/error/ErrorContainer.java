@@ -14,7 +14,12 @@ public enum ErrorContainer {
 
     AUTHENTICATION_ERROR(210, "Authentication error", HttpStatus.UNAUTHORIZED),
     BAD_REQUEST(211, "Bad request", HttpStatus.BAD_REQUEST),
-    USER_NOT_FOUND(212, "User not found", HttpStatus.NOT_FOUND),
+    USER_NOT_FOUND(212, "Пользователь не найден", HttpStatus.NOT_FOUND),
+    USER_WITH_THIS_EMAIL_EXIST(213, "Данный e-mail уже используется", HttpStatus.BAD_REQUEST),
+    USER_WITH_THIS_STUDENT_NUMBER_EXIST(214, "Пользователь с таким номером зачетки уже зарегистрирован", HttpStatus.BAD_REQUEST),
+    ACTIVATION_CODE_NOT_FOUND(215, "Данного кода активации не существует", HttpStatus.NOT_FOUND),
+    ACTIVATION_CODE_EXPIRED(216, "Срок действия кода активации истек", HttpStatus.FORBIDDEN),
+
     OTHER(999, "Other Type of Error. See error message", HttpStatus.INTERNAL_SERVER_ERROR);
 
     private static final ErrorContainer[] VALUES = values();

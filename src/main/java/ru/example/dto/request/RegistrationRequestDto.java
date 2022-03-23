@@ -1,30 +1,30 @@
 package ru.example.dto.request;
 
 import lombok.Data;
-import ru.example.domain.Gender;
+import ru.example.dao.entity.user.Gender;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
 public class RegistrationRequestDto {
-//    @NotBlank
+    @NotBlank
     private String firstname;
 
-//    @NotBlank
+    @NotBlank
     private String lastname;
 
     private String patronymic;
 
-//    @NotBlank
+    @NotBlank
     private String studentNumber;
 
-//    @NotNull
+    @NotNull
     private Gender gender;
 
-//    @NotBlank
+    @NotBlank
     private String email;
 
-//    @NotBlank
+    @NotBlank
     private String password;
 }

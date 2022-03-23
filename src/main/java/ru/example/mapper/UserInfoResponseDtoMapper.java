@@ -1,7 +1,7 @@
 package ru.example.mapper;
 
 import org.mapstruct.Mapper;
-import ru.example.domain.User;
+import ru.example.dao.entity.user.User;
 import ru.example.dto.response.UserInfoDto;
 
 @Mapper

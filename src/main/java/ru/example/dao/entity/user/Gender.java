@@ -1,4 +1,4 @@
-package ru.example.domain;
+package ru.example.dao.entity.user;
 
 
 import com.fasterxml.jackson.annotation.JsonCreator;

@@ -4,8 +4,8 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-import ru.example.domain.Status;
-import ru.example.domain.User;
+import ru.example.dao.entity.Status;
+import ru.example.dao.entity.user.User;
 import ru.example.security.jwt.JwtUser;
 
 @Mapper

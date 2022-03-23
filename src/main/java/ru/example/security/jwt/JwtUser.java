@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.example.domain.Role;
+import ru.example.dao.entity.user.Role;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
