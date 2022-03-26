@@ -16,6 +16,7 @@ import ru.example.service.RegistrationService;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -44,21 +45,37 @@ public class RegistrationServiceImpl implements RegistrationService {
         User user = userRepository.findByActivationCode(activationCode);
 
         checkUserActivationCode(user);
+        activateUserEntity(user);
 
-        user.setActivationCode(null);
-        user.setActivationCodeExpirationDate(null);
-        user.setStatus(Status.ACTIVE);
-
-        userRepository.save(user);
         mailSender.sendSuccessActivationMessage(user);
+        userRepository.save(user);
 
         return StatusResult.ok();
     }
 
     @Override
     public StatusResult resendActivationCode(String expiredActivationCode) {
-        //TODO доделать
-        return null;
+
+        User user = userRepository.findByActivationCode(expiredActivationCode);
+        checkUserExpiredActivationCode(user);
+
+        String newActivationCode = UUID.randomUUID().toString();
+        user.setActivationCode(newActivationCode);
+
+        mailSender.sendConfirmationMessage(user);
+        userRepository.save(user);
+
+        return StatusResult.ok();
+    }
+
+    private void checkUserExpiredActivationCode(User user) {
+        if (user == null) {
+            throw new ApiException(ErrorContainer.USER_ALREADY_CONFIRM_EMAIL);
+        }
+
+        if (user.getActivationCodeExpirationDate().isAfter(LocalDateTime.now())) {
+            throw new ApiException(ErrorContainer.OTHER);
+        }
     }
 
     private void checkUserActivationCode(User user) {
@@ -88,5 +105,11 @@ public class RegistrationServiceImpl implements RegistrationService {
         String decodePassword = request.getPassword();
         String encodePassword = passwordEncoder.encode(decodePassword);
         request.setPassword(encodePassword);
+    }
+
+    private void activateUserEntity(User user) {
+        user.setActivationCode(null);
+        user.setActivationCodeExpirationDate(null);
+        user.setStatus(Status.ACTIVE);
     }
 }

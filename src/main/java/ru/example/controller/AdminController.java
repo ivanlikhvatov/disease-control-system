@@ -11,8 +11,8 @@ import ru.example.service.UserService;
 public class AdminController {
     private final UserService userService;
 
-    @GetMapping("/users")
-    public UserInfoDto getUserByStudentNumber(@RequestParam String studentNumber) {
+    @GetMapping("/users/{studentNumber}")
+    public UserInfoDto getUserByStudentNumber(@PathVariable String studentNumber) {
         return userService.getUserInfoDtoByStudentNumber(studentNumber);
     }
 
