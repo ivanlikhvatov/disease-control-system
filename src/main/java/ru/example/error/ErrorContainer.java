@@ -22,6 +22,7 @@ public enum ErrorContainer {
     USER_ALREADY_CONFIRM_EMAIL(217, "Пользователь уже подтвердил почту", HttpStatus.FOUND),
     PAGE_NOT_FOUND(219, "Page not found", HttpStatus.NOT_FOUND),
     ACCESS_DENIED(220, "Access Denied", HttpStatus.FORBIDDEN),
+    MAIL_EXCEPTION(221, "Сервисы email недоступны, пожалуйста попробуйте позже", HttpStatus.METHOD_NOT_ALLOWED),
 
     OTHER(999, "Other Type of Error. See error message", HttpStatus.INTERNAL_SERVER_ERROR);
 

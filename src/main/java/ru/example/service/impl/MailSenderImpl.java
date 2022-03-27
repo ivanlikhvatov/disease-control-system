@@ -2,10 +2,13 @@ package ru.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 import org.springframework.mail.javamail.JavaMailSender;
 import ru.example.dao.entity.user.User;
+import ru.example.error.ApiException;
+import ru.example.error.ErrorContainer;
 import ru.example.service.MailSender;
 import ru.example.utils.mail.MailMessages;
 import ru.example.utils.mail.MailSubjects;
@@ -56,7 +59,11 @@ public class MailSenderImpl implements MailSender {
         mailMessage.setSubject(subject);
         mailMessage.setText(message);
 
-        mailSender.send(mailMessage);
+        try {
+            mailSender.send(mailMessage);
+        } catch (MailException e) {
+            throw new ApiException(ErrorContainer.MAIL_EXCEPTION);
+        }
     }
 
     private String buildUserName(User user) {

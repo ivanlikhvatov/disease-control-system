@@ -1,5 +1,6 @@
 package ru.example.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Data
@@ -9,6 +10,7 @@ public class StatusResult {
 
     private String status;
 
+    @JsonIgnore
     private String message;
 
     public StatusResult() {
