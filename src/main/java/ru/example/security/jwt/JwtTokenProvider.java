@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ru.example.dao.entity.user.Role;
 import ru.example.error.ApiException;
@@ -100,8 +101,10 @@ public class JwtTokenProvider {
             return !claims.getBody()
                     .getExpiration()
                     .before(new Date());
-        } catch (JwtException | IllegalArgumentException exception) {
-            throw new ApiException(ErrorContainer.AUTHENTICATION_ERROR, exception.getMessage());
+        } catch (JwtException e) {
+            throw new UsernameNotFoundException(e.getMessage());
+        } catch (IllegalArgumentException e) {
+            throw new ApiException(ErrorContainer.AUTHENTICATION_ERROR, e.getMessage());
         }
     }
 
