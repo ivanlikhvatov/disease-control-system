@@ -19,8 +19,9 @@ public enum ErrorContainer {
     USER_WITH_THIS_STUDENT_NUMBER_EXIST(214, "Пользователь с таким номером зачетки уже зарегистрирован", HttpStatus.BAD_REQUEST),
     ACTIVATION_CODE_NOT_FOUND(215, "Данного кода активации не существует", HttpStatus.NOT_FOUND),
     ACTIVATION_CODE_EXPIRED(216, "Срок действия кода активации истек", HttpStatus.FORBIDDEN),
-    USER_ALREADY_CONFIRM_EMAIL(217, "Пользователь уже подтвердил почту", HttpStatus.NOT_FOUND),
+    USER_ALREADY_CONFIRM_EMAIL(217, "Пользователь уже подтвердил почту", HttpStatus.FOUND),
     PAGE_NOT_FOUND(219, "Page not found", HttpStatus.NOT_FOUND),
+    ACCESS_DENIED(220, "Access Denied", HttpStatus.FORBIDDEN),
 
     OTHER(999, "Other Type of Error. See error message", HttpStatus.INTERNAL_SERVER_ERROR);
 

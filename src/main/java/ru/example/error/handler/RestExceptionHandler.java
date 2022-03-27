@@ -10,6 +10,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.example.error.ApiError;
@@ -53,17 +56,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         int code = ex.getError().getCode();
         ApiError apiError = new ApiError(message, code);
         return new ResponseEntity<>(apiError, ex.getError().getHttpStatus());
-    }
-
-    @ExceptionHandler({ExpiredJwtException.class})
-    public ResponseEntity<ApiError> handleAuthenticationException(ExpiredJwtException ex) {
-        String message = ErrorContainer.AUTHENTICATION_ERROR.getMessage();
-        int code = ErrorContainer.AUTHENTICATION_ERROR.getCode();
-        HttpStatus status = ErrorContainer.AUTHENTICATION_ERROR.getHttpStatus();
-
-
-        ApiError apiError = new ApiError(message, code);
-        return new ResponseEntity<>(apiError, status);
     }
 
     @Override

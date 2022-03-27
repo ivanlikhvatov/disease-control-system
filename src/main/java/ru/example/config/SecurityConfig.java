@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import ru.example.dao.entity.user.Role;
 import ru.example.security.jwt.JwtConfigurer;
 import ru.example.security.jwt.JwtTokenProvider;
@@ -32,6 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private static final String ALL_URLS = "/**";
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+    private final AccessDeniedHandler accessDeniedHandler;
 
     @Bean
     @Override
@@ -50,6 +54,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(loginEndpoint, registrationEndpoint).permitAll()
                 .antMatchers(adminEndpoint + ALL_URLS).hasAuthority(Role.ADMIN.name())
                 .anyRequest().authenticated()
+                .and()
+                .exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider));
     }
