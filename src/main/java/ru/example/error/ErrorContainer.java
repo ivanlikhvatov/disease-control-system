@@ -23,6 +23,7 @@ public enum ErrorContainer {
     PAGE_NOT_FOUND(219, "Page not found", HttpStatus.NOT_FOUND),
     ACCESS_DENIED(220, "Access Denied", HttpStatus.FORBIDDEN),
     MAIL_EXCEPTION(221, "Сервисы email недоступны, пожалуйста попробуйте позже", HttpStatus.FORBIDDEN),
+    USER_STATUS_NOT_ACTIVE(222, "Аккаунт не активирован", HttpStatus.BAD_REQUEST),
 
     OTHER(999, "Other Type of Error. See error message", HttpStatus.INTERNAL_SERVER_ERROR);
 
