@@ -13,17 +13,20 @@ import ru.example.service.MailSender;
 import ru.example.utils.mail.MailMessages;
 import ru.example.utils.mail.MailSubjects;
 
+import java.text.MessageFormat;
+
 @Service
 @RequiredArgsConstructor
 public class MailSenderImpl implements MailSender {
 
     private final static String SPACE = " ";
+    private final static String ACTIVATION_CODE_URL_PARAMS = "?userName={0}&activationCode={1}";
 
     @Value("${spring.mail.username}")
     private String username;
 
     @Value("${vue-client.url}")
-    private String url;
+    private String clientUrl;
 
     @Value("${vue-client.confirm-register-path}")
     private String activationPath;
@@ -36,16 +39,35 @@ public class MailSenderImpl implements MailSender {
     @Override
     public void sendConfirmationMessage(User user) {
         String userName = buildUserName(user);
-        String activationFullPath = url + activationPath + user.getActivationCode();
+        String activationFullPath = buildActivationPath(user);
         String message = MailMessages.createConfirmRegistrationMessage(userName, activationFullPath);
 
         send(user.getEmail(), MailSubjects.ACTIVATION_SUBJECT.getText(), message);
     }
 
+    private String buildActivationPath(User user) {
+        String requestParams = buildActivationCodeUriParams(user);
+
+        return clientUrl
+                .concat(activationPath)
+                .concat(requestParams);
+    }
+
+    private String buildActivationCodeUriParams(User user) {
+        String fullUsername = buildUserName(user);
+        String activationCode = user.getActivationCode();
+
+        return MessageFormat.format(
+                ACTIVATION_CODE_URL_PARAMS,
+                fullUsername,
+                activationCode
+        );
+    }
+
     @Override
     public void sendSuccessActivationMessage(User user) {
         String userName = buildUserName(user);
-        String loginFullPath = url + loginPath;
+        String loginFullPath = clientUrl.concat(loginPath);
         String message = MailMessages.createSuccessActivationMessage(userName, loginFullPath);
 
         send(user.getEmail(), MailSubjects.SUCCESS_ACTIVATION.getText(), message);

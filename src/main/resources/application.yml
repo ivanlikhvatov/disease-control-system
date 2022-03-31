@@ -27,7 +27,7 @@ api:
 
 vue-client:
   url: http://localhost:8081
-  confirm-register-path: /auth/activate/
+  confirm-register-path: /registration/activate
   login: /login
 
 
