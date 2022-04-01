@@ -1,6 +1,7 @@
 package ru.example.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.dao.entity.Status;
@@ -27,12 +28,15 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final MailSender mailSender;
     private final UserRepository userRepository;
 
+    @Value("${activationCode.duration.hours}")
+    private Long codeDuration;
+
     @Override
     public StatusResult registerUser(RegistrationRequestDto request) {
         checkUser(request);
 
         encodePassword(request);
-        User user = mapper.map(request);
+        User user = mapper.map(request, codeDuration);
 
         mailSender.sendConfirmationMessage(user);
         userRepository.save(user);
@@ -58,14 +62,18 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         User user = userRepository.findByActivationCode(expiredActivationCode);
         checkUserExpiredActivationCode(user);
-
-        String newActivationCode = UUID.randomUUID().toString();
-        user.setActivationCode(newActivationCode);
+        editUser(user);
 
         mailSender.sendConfirmationMessage(user);
         userRepository.save(user);
 
         return StatusResult.ok();
+    }
+
+    private void editUser(User user) {
+        String newActivationCode = UUID.randomUUID().toString();
+        user.setActivationCode(newActivationCode);
+        user.setActivationCodeExpirationDate(LocalDateTime.now().plusHours(codeDuration));
     }
 
     private void checkUserExpiredActivationCode(User user) {

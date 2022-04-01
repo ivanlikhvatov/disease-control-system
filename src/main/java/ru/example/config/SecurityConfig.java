@@ -22,16 +22,11 @@ import ru.example.security.jwt.JwtTokenProvider;
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Value("${api.endpoints.login}")
-    private String loginEndpoint;
+    @Value("${api.endpoints.permitAll}")
+    private String[] permitAll;
 
-    @Value("${api.endpoints.registration}")
-    private String registrationEndpoint;
-
-    @Value("${api.endpoints.admin}")
-    private String adminEndpoint;
-
-    private static final String ALL_URLS = "/**";
+    @Value("${api.endpoints.roleAdmin}")
+    private String[] roleAdmin;
 
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;
@@ -45,15 +40,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
         http
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(loginEndpoint, registrationEndpoint).permitAll()
-                .antMatchers(adminEndpoint + ALL_URLS).hasAuthority(Role.ADMIN.name())
-                .anyRequest().authenticated()
+                .antMatchers(permitAll)
+                .permitAll()
+                .antMatchers(roleAdmin)
+                .hasAuthority(Role.ADMIN.name())
+                .anyRequest()
+                .authenticated()
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler)

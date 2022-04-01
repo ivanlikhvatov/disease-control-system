@@ -14,13 +14,12 @@ import java.util.UUID;
 
 @Mapper
 public abstract class RegistrationRequestDtoMapper {
-    private final static Long CODE_DURATION = 24L;
 
-    public abstract User map(RegistrationRequestDto request);
+    public abstract User map(RegistrationRequestDto request, Long codeDuration);
 
     @AfterMapping
-    public void mapAfter(@MappingTarget User user, RegistrationRequestDto request) {
-        LocalDateTime codeExpiration = LocalDateTime.now().minusHours(CODE_DURATION);
+    public void mapAfter(@MappingTarget User user, RegistrationRequestDto request, Long codeDuration) {
+        LocalDateTime codeExpiration = LocalDateTime.now().plusHours(codeDuration);
 
         user.setRoles(Set.of(Role.USER));
         user.setStatus(Status.NOT_ACTIVE);

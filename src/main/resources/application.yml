@@ -18,12 +18,21 @@ spring:
 mail:
   debug: true
 
+activationCode:
+  duration:
+    hours: 24
+
 api:
   prefix: /api/v1
   endpoints:
-    login: /api/v1/auth/login
-    registration: /api/v1/auth/registration
-    admin: /api/v1/admin
+    roleAdmin:
+      /api/v1/admin/**
+    permitAll:
+      /api/v1/auth/login,
+      /api/v1/auth/registration,
+      /api/v1/auth/activate,
+      /api/v1/auth/code/resend
+
 
 vue-client:
   url: http://localhost:8081
