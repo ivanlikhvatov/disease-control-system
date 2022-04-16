@@ -5,6 +5,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import ru.example.dao.entity.Status;
+import ru.example.dao.entity.group.Group;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,6 +37,10 @@ public class User {
     private LocalDateTime activationCodeExpirationDate;
 
     private Gender gender;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
+    private Group group;
 
     @LastModifiedDate
     private LocalDateTime updated;
