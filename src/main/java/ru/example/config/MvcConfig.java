@@ -30,8 +30,7 @@ public class MvcConfig {
                         .allowCredentials(true)
                         .allowedMethods(ALL)
                         .maxAge(MAX_AGE)
-                        .allowedOrigins(url)
-                        .allowedHeaders("Authorization");
+                        .allowedOrigins(url);
             }
         };
     }
