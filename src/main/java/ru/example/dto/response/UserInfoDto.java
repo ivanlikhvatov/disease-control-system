@@ -19,6 +19,8 @@ public class UserInfoDto {
 
     private String patronymic;
 
+    private GroupResponse group;
+
     private LocalDateTime updated;
 
     private LocalDateTime created;

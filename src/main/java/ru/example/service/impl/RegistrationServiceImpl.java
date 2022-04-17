@@ -10,7 +10,6 @@ import ru.example.dto.request.RegistrationRequestDto;
 import ru.example.dto.response.StatusResult;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
-import ru.example.mapper.RegistrationRequestDtoMapper;
 import ru.example.repository.UserRepository;
 import ru.example.service.MailSender;
 import ru.example.service.RegistrationService;
@@ -24,7 +23,6 @@ import java.util.UUID;
 public class RegistrationServiceImpl implements RegistrationService {
 
     private final BCryptPasswordEncoder passwordEncoder;
-    private final RegistrationRequestDtoMapper mapper;
     private final MailSender mailSender;
     private final UserRepository userRepository;
 
@@ -34,14 +32,27 @@ public class RegistrationServiceImpl implements RegistrationService {
     @Override
     public StatusResult registerUser(RegistrationRequestDto request) {
         checkUser(request);
-
         encodePassword(request);
-        User user = mapper.map(request, codeDuration);
+
+        User user = updateUser(request);
 
         mailSender.sendConfirmationMessage(user);
         userRepository.save(user);
 
         return StatusResult.ok();
+    }
+
+    private User updateUser(RegistrationRequestDto request) {
+        User user = userRepository.findByStudentNumber(request.getStudentNumber());
+        LocalDateTime codeExpiration = LocalDateTime.now().plusHours(codeDuration);
+
+        user.setStatus(Status.NOT_ACTIVE);
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setActivationCode(UUID.randomUUID().toString());
+        user.setActivationCodeExpirationDate(codeExpiration);
+
+        return user;
     }
 
     @Override
@@ -98,15 +109,19 @@ public class RegistrationServiceImpl implements RegistrationService {
 
 
     private void checkUser(RegistrationRequestDto request) {
-        Optional.ofNullable(userRepository.findByStudentNumber(request.getStudentNumber()))
-                .ifPresent(user -> {
-                    throw new ApiException(ErrorContainer.USER_WITH_THIS_STUDENT_NUMBER_EXIST);
-                });
-
         Optional.ofNullable(userRepository.findByEmail(request.getEmail()))
                 .ifPresent(user -> {
                     throw new ApiException(ErrorContainer.USER_WITH_THIS_EMAIL_EXIST);
                 });
+
+        User user = userRepository.findByStudentNumber(request.getStudentNumber());
+
+        Optional.ofNullable(user)
+                .orElseThrow(() -> new ApiException(ErrorContainer.USER_WITH_THIS_STUDENT_NUMBER_NOT_FOUND));
+
+        if (!Status.CREATED.equals(user.getStatus())) {
+            throw new ApiException(ErrorContainer.USER_WITH_THIS_STUDENT_NUMBER_ALREADY_REGISTER);
+        }
     }
 
     private void encodePassword(RegistrationRequestDto request) {

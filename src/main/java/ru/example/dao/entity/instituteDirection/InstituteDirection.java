@@ -1,11 +1,13 @@
 package ru.example.dao.entity.instituteDirection;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.example.dao.entity.institute.Institute;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class InstituteDirection {
     @Id

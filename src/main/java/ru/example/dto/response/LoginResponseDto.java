@@ -22,6 +22,8 @@ public class LoginResponseDto {
 
     private String patronymic;
 
+    private GroupResponse group;
+
     private LocalDateTime updated;
 
     private LocalDateTime created;

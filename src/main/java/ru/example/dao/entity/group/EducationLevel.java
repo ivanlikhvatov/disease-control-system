@@ -11,10 +11,10 @@ import java.util.Arrays;
 @Getter
 @AllArgsConstructor
 public enum EducationLevel {
-    UNDERGRADUATE("бакалавриат", "б"),
-    MAGISTRACY("магистратура", "м"),
-    SPECIALTY("специалитет", "с"),
-    POSTGRADUATE("аспирантура", "а");
+    UNDERGRADUATE("Бакалавриат", "б"),
+    MAGISTRACY("Магистратура", "м"),
+    SPECIALTY("Специалитет", "с"),
+    POSTGRADUATE("Аспирантура", "а");
 
     private final String valueFromClient;
     private final String shortName;

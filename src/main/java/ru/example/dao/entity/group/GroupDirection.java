@@ -1,10 +1,13 @@
 package ru.example.dao.entity.group;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "institute_group_direction")
 public class GroupDirection {
