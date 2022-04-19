@@ -2,6 +2,7 @@ package ru.example.dao.entity.group;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.example.dao.entity.directionProfile.DirectionProfile;
 import ru.example.dao.entity.instituteDirection.InstituteDirection;
 
 import javax.persistence.*;
@@ -17,10 +18,6 @@ public class Group {
 
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "institute_direction_id")
-    private InstituteDirection instituteDirection;
-
     private Integer course;
 
     @Enumerated(EnumType.STRING)
@@ -30,8 +27,8 @@ public class Group {
     private EducationLevel educationLevel;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "group_direction_id")
-    private GroupDirection groupDirection;
+    @JoinColumn(name = "direction_profile_id")
+    private DirectionProfile directionProfile;
 
     private String serialNumber;
 }

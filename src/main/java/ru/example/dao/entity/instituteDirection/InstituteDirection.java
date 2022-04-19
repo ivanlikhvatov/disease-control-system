@@ -2,6 +2,7 @@ package ru.example.dao.entity.instituteDirection;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.example.dao.entity.directionProfile.DirectionProfile;
 import ru.example.dao.entity.institute.Institute;
 
 import javax.persistence.*;

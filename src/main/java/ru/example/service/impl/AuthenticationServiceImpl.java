@@ -36,10 +36,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(studentNumber, password);
 
-        authenticationManager.authenticate(authenticationToken);
+        authenticateUser(authenticationToken);
+
         String token = jwtTokenProvider.createToken(request.getStudentNumber(), user.getRoles());
 
         return mapper.map(user, token);
+    }
+
+    private void authenticateUser(UsernamePasswordAuthenticationToken authenticationToken) {
+        try {
+            authenticationManager.authenticate(authenticationToken);
+        } catch (Exception e) {
+            throw new ApiException(ErrorContainer.USER_NOT_FOUND);
+        }
     }
 
     private void checkUser(UserInfoDto user) {
