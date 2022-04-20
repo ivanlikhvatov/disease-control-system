@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class InstituteDirection {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
 
     private String fullName;
 

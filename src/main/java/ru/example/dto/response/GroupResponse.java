@@ -4,14 +4,12 @@ import lombok.Data;
 import ru.example.dao.entity.group.EducationLevel;
 import ru.example.dao.entity.group.EducationType;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Data
 public class GroupResponse {
 
-    private InstituteDirectionResponse instituteDirection;
+    private String id;
+
+    private String name;
 
     private Integer course;
 
@@ -19,7 +17,7 @@ public class GroupResponse {
 
     private EducationLevel educationLevel;
 
-    private GroupDirectionResponse groupDirection;
+    private DirectionProfileResponse directionProfile;
 
     private String serialNumber;
 }

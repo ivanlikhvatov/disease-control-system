@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class DirectionProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "institute_direction_id")

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 public class DiseaseInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "disease_id")

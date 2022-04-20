@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class Institute {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private String id;
 
     private String fullName;
 

@@ -12,5 +12,5 @@ public interface UserService {
 
     User getUserByStudentNumber(String studentNumber);
 
-    User getById(Long id);
+    User getById(String id);
 }

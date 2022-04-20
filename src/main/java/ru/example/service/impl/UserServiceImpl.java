@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getById(Long id) {
+    public User getById(String id) {
         return Optional.of(userRepository.findById(id))
                 .get()
                 .orElse(null);
