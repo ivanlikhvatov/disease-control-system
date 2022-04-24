@@ -7,18 +7,17 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class InstituteDirectionRequest {
-
+public class DirectionProfileRequest {
     @NotBlank
     private String id;
 
-    @NotBlank
-    private String fullName;
-
-    @NotBlank
-    private String shortName;
-
     @NotNull
     @Valid
-    private InstituteRequest institute;
+    private InstituteDirectionRequest instituteDirection;
+
+    @NotBlank
+    private String name;
+
+    @NotBlank
+    private String index;
 }

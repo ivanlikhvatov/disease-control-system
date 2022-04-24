@@ -43,7 +43,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     }
 
     private User updateUser(RegistrationRequestDto request) {
-        User user = userRepository.findByStudentNumber(request.getStudentNumber());
+        User user = userRepository.findByLogin(request.getLogin());
         LocalDateTime codeExpiration = LocalDateTime.now().plusHours(codeDuration);
 
         user.setStatus(Status.NOT_ACTIVE);
@@ -114,13 +114,13 @@ public class RegistrationServiceImpl implements RegistrationService {
                     throw new ApiException(ErrorContainer.USER_WITH_THIS_EMAIL_EXIST);
                 });
 
-        User user = userRepository.findByStudentNumber(request.getStudentNumber());
+        User user = userRepository.findByLogin(request.getLogin());
 
         Optional.ofNullable(user)
-                .orElseThrow(() -> new ApiException(ErrorContainer.USER_WITH_THIS_STUDENT_NUMBER_NOT_FOUND));
+                .orElseThrow(() -> new ApiException(ErrorContainer.USER_WITH_THIS_LOGIN_NOT_FOUND));
 
         if (!Status.CREATED.equals(user.getStatus())) {
-            throw new ApiException(ErrorContainer.USER_WITH_THIS_STUDENT_NUMBER_ALREADY_REGISTER);
+            throw new ApiException(ErrorContainer.USER_WITH_THIS_LOGIN_ALREADY_REGISTER);
         }
     }
 

@@ -12,7 +12,7 @@ public class LoginResponseDto {
 
     private String token;
 
-    private String studentNumber;
+    private String login;
 
     private String email;
 

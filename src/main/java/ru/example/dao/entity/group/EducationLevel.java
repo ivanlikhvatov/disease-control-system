@@ -22,7 +22,7 @@ public enum EducationLevel {
     @JsonCreator
     public static EducationLevel fromValue(String name) {
         return Arrays.stream(values())
-                .filter(item -> item.valueFromClient.equals(name))
+                .filter(item -> item.valueFromClient.equals(name) || item.name().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new ApiException(ErrorContainer.BAD_REQUEST));
     }

@@ -71,6 +71,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({Exception.class})
     public ResponseEntity<ApiError> generalHandler(Exception ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(INTERNAL_SERVER_ERROR_MESSAGE, ErrorContainer.OTHER.getCode());
+        ex.printStackTrace();
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

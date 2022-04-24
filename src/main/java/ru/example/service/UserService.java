@@ -8,9 +8,9 @@ import java.util.List;
 public interface UserService {
     List<User> getAllUsers();
 
-    UserInfoDto getUserInfoDtoByStudentNumber(String studentNumber);
+    UserInfoDto getUserInfoDtoByLogin(String login);
 
-    User getUserByStudentNumber(String studentNumber);
+    User getUserByLogin(String login);
 
     User getById(String id);
 }

@@ -2,6 +2,7 @@ package ru.example.dao.entity.instituteDirection;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import ru.example.dao.entity.directionProfile.DirectionProfile;
 import ru.example.dao.entity.institute.Institute;
 
@@ -12,7 +13,8 @@ import javax.persistence.*;
 @Entity
 public class InstituteDirection {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
 
     private String fullName;

@@ -45,10 +45,10 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(String studentNumber, Set<Role> roles) {
+    public String createToken(String login, Set<Role> roles) {
         Claims claims = Jwts
                 .claims()
-                .setSubject(studentNumber);
+                .setSubject(login);
 
         claims.put(ROLES_LIST_NAME, getRolesNames(roles));
 
@@ -64,8 +64,8 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        String studentNumber = getStudentNumber(token);
-        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(studentNumber);
+        String login = getLogin(token);
+        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(login);
 
         return new UsernamePasswordAuthenticationToken(
                 userDetails,
@@ -74,7 +74,7 @@ public class JwtTokenProvider {
         );
     }
 
-    public String getStudentNumber(String token) {
+    public String getLogin(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)

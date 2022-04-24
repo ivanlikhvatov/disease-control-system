@@ -17,7 +17,7 @@ import java.util.Set;
 public class JwtUser implements UserDetails {
     private Long id;
 
-    private String studentNumber;
+    private String login;
 
     private String password;
 
@@ -49,7 +49,7 @@ public class JwtUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return studentNumber;
+        return login;
     }
 
     @Override

@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 public class RegistrationRequestDto {
     @NotBlank
     @Size(max = 20)
-    private String studentNumber;
+    private String login;
 
     @NotBlank
     @Email

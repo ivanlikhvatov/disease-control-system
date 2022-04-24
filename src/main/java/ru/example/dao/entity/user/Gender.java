@@ -20,7 +20,7 @@ public enum Gender {
     @JsonCreator
     public static Gender fromValue(String name) {
         return Arrays.stream(values())
-                .filter(item -> item.valueFromVueClient.equals(name))
+                .filter(item -> item.valueFromVueClient.equals(name) || item.name().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new ApiException(ErrorContainer.BAD_REQUEST));
     }

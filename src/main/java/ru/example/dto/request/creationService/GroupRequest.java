@@ -11,9 +11,11 @@ import javax.validation.constraints.NotNull;
 @Data
 public class GroupRequest {
 
-    @NotNull
-    @Valid
-    private InstituteDirectionRequest instituteDirection;
+    @NotBlank
+    private String id;
+
+    @NotBlank
+    private String name;
 
     @NotNull
     private Integer course;
@@ -26,7 +28,7 @@ public class GroupRequest {
 
     @NotNull
     @Valid
-    private GroupDirectionRequest groupDirection;
+    private DirectionProfileRequest directionProfile;
 
     @NotBlank
     private String serialNumber;

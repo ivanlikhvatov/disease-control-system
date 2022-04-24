@@ -26,19 +26,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public LoginResponseDto loginUser(AuthenticationRequestDto request) {
-        String studentNumber = request.getStudentNumber();
+        String login = request.getLogin();
         String password = request.getPassword();
 
-        UserInfoDto user = userService.getUserInfoDtoByStudentNumber(studentNumber);
+        UserInfoDto user = userService.getUserInfoDtoByLogin(login);
 
         checkUser(user);
 
         UsernamePasswordAuthenticationToken authenticationToken
-                = new UsernamePasswordAuthenticationToken(studentNumber, password);
+                = new UsernamePasswordAuthenticationToken(login, password);
 
         authenticateUser(authenticationToken);
 
-        String token = jwtTokenProvider.createToken(request.getStudentNumber(), user.getRoles());
+        String token = jwtTokenProvider.createToken(request.getLogin(), user.getRoles());
 
         return mapper.map(user, token);
     }
@@ -47,6 +47,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             authenticationManager.authenticate(authenticationToken);
         } catch (Exception e) {
+            e.printStackTrace();
             throw new ApiException(ErrorContainer.USER_NOT_FOUND);
         }
     }

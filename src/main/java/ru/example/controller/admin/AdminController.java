@@ -6,6 +6,7 @@ import ru.example.dto.request.creationService.UserCreationRequestDto;
 import ru.example.dto.response.*;
 import ru.example.service.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,13 +20,13 @@ public class AdminController {
     private final DirectionProfileService directionProfileService;
     private final GroupService groupService;
 
-    @GetMapping("/users/{studentNumber}")
-    public UserInfoDto getUserByStudentNumber(@PathVariable String studentNumber) {
-        return userService.getUserInfoDtoByStudentNumber(studentNumber);
+    @GetMapping("/users")
+    public UserInfoDto getUserByLogin(@RequestParam String login) {
+        return userService.getUserInfoDtoByLogin(login);
     }
 
     @PostMapping("/users/create")
-    public StatusResult createUser(@RequestBody UserCreationRequestDto request) {
+    public StatusResult createUser(@RequestBody @Valid UserCreationRequestDto request) {
         return creationService.createUser(request);
     }
 

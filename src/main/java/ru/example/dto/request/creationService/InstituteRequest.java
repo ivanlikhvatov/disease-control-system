@@ -8,6 +8,9 @@ import javax.validation.constraints.NotBlank;
 public class InstituteRequest {
 
     @NotBlank
+    private String id;
+
+    @NotBlank
     private String fullName;
 
     @NotBlank

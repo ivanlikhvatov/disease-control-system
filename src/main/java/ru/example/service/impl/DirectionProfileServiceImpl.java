@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.example.dao.entity.directionProfile.DirectionProfile;
 import ru.example.dto.response.DirectionProfileResponse;
+import ru.example.mapper.DirectionProfileResponseMapper;
 import ru.example.repository.DirectionProfileRepository;
 import ru.example.service.DirectionProfileService;
 
@@ -14,10 +15,11 @@ import java.util.List;
 public class DirectionProfileServiceImpl implements DirectionProfileService {
 
     private final DirectionProfileRepository repository;
+    private final DirectionProfileResponseMapper mapper;
 
     @Override
     public List<DirectionProfileResponse> getDirectionProfiles(String directionId) {
         List<DirectionProfile> directionProfiles = repository.findAllByInstituteDirectionId(directionId);
-        return null;
+        return mapper.map(directionProfiles);
     }
 }

@@ -32,9 +32,9 @@ public class UserCreationServiceImpl implements UserCreationService {
     }
 
     private void validateRequest(UserCreationRequestDto request) {
-        Optional.ofNullable(userRepository.findByStudentNumber(request.getStudentNumber()))
+        Optional.ofNullable(userRepository.findByLogin(request.getLogin()))
                 .ifPresent(user -> {
-                    throw new ApiException(ErrorContainer.USER_WITH_THIS_STUDENT_NUMBER_EXIST);
+                    throw new ApiException(ErrorContainer.USER_WITH_THIS_LOGIN_EXIST);
                 });
     }
 }

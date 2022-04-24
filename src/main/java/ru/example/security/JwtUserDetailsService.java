@@ -24,8 +24,8 @@ public class JwtUserDetailsService implements UserDetailsService {
     private final JwtUserMapper mapper;
 
     @Override
-    public UserDetails loadUserByUsername(String studentNumber) throws UsernameNotFoundException {
-        User user = userService.getUserByStudentNumber(studentNumber);
+    public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
+        User user = userService.getUserByLogin(login);
 
         Optional.ofNullable(user)
                 .orElseThrow(() -> new ApiException(ErrorContainer.USER_NOT_FOUND));

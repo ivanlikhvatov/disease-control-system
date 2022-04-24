@@ -15,6 +15,5 @@ public interface UserCreationRequestDtoMapper {
     @AfterMapping
     default void mapAfter(@MappingTarget User user, UserCreationRequestDto request){
         user.setStatus(Status.CREATED);
-
     }
 }

@@ -32,8 +32,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserInfoDto getUserInfoDtoByStudentNumber(String studentNumber) {
-        User user = userRepository.findByStudentNumber(studentNumber);
+    public UserInfoDto getUserInfoDtoByLogin(String login) {
+        User user = userRepository.findByLogin(login);
 
         if (user == null) {
             throw new ApiException(ErrorContainer.USER_NOT_FOUND);
@@ -43,8 +43,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUserByStudentNumber(String studentNumber) {
-        User user = userRepository.findByStudentNumber(studentNumber);
+    public User getUserByLogin(String login) {
+        User user = userRepository.findByLogin(login);
 
         if (user == null) {
             throw new ApiException(ErrorContainer.USER_NOT_FOUND);

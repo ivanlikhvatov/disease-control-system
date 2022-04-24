@@ -10,7 +10,7 @@ public class AuthenticationRequestDto {
 
     @NotBlank
     @Size(max = 20)
-    private String studentNumber;
+    private String login;
 
     @NotBlank
     @Size(max = 30)

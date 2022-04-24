@@ -17,6 +17,6 @@ public class UserController {
 
     @GetMapping("/info")
     public UserInfoDto getUserInfo(@AuthenticationPrincipal JwtUser jwtUser) {
-        return userService.getUserInfoDtoByStudentNumber(jwtUser.getStudentNumber());
+        return userService.getUserInfoDtoByLogin(jwtUser.getLogin());
     }
 }

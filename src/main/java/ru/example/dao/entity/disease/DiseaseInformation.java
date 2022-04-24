@@ -1,20 +1,19 @@
 package ru.example.dao.entity.disease;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
 @Getter
 @Setter
-//@EqualsAndHashCode(exclude = "nameAttributeInThisClassWithManyToOne")
 @Entity
 public class DiseaseInformation {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
     private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
