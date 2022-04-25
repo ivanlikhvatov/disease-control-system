@@ -15,7 +15,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JwtUser implements UserDetails {
-    private Long id;
+    private String id;
 
     private String login;
 

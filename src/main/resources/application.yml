@@ -27,6 +27,8 @@ api:
   endpoints:
     roleAdmin:
       /api/v1/admin/**
+    roleStudent:
+      /api/v1/student/**
     permitAll:
       /api/v1/auth/login,
       /api/v1/auth/registration,

@@ -16,7 +16,7 @@ public enum ErrorContainer {
     BAD_REQUEST(211, "Request validation error", HttpStatus.BAD_REQUEST),
     USER_NOT_FOUND(212, "Пользователь не найден", HttpStatus.NOT_FOUND),
     USER_WITH_THIS_EMAIL_EXIST(213, "Данный e-mail уже используется", HttpStatus.BAD_REQUEST),
-    USER_WITH_THIS_LOGIN_EXIST(214, "Пользователь с таким номером зачетки уже зарегистрирован", HttpStatus.BAD_REQUEST),
+    USER_WITH_THIS_LOGIN_EXIST(214, "Пользователь с таким логином уже зарегистрирован", HttpStatus.BAD_REQUEST),
     ACTIVATION_CODE_NOT_FOUND(215, "Данного кода активации не существует", HttpStatus.NOT_FOUND),
     ACTIVATION_CODE_EXPIRED(216, "Срок действия кода активации истек", HttpStatus.FORBIDDEN),
     USER_ALREADY_CONFIRM_EMAIL(217, "Пользователь уже подтвердил почту", HttpStatus.FOUND),

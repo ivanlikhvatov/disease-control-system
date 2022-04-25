@@ -20,6 +20,8 @@ public class DiseaseInformation {
     @JoinColumn(name = "disease_id")
     private Disease disease;
 
+    private String otherDiseaseInformation;
+
     private LocalDate dateOfDisease;
 
     private LocalDate dateOfRecovery;
