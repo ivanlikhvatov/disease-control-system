@@ -26,6 +26,7 @@ public enum ErrorContainer {
     USER_STATUS_NOT_ACTIVE(222, "Аккаунт не активирован", HttpStatus.BAD_REQUEST),
     USER_WITH_THIS_LOGIN_ALREADY_REGISTER(223, "Пользователь уже зарегистрирован", HttpStatus.BAD_REQUEST),
     USER_WITH_THIS_LOGIN_NOT_FOUND(224, "Пользователь с таким логином не найден", HttpStatus.BAD_REQUEST),
+    OLD_DISEASE_IS_NOT_CLOSED(225, "Старый больничный не закрыт. Сначала закройте старый больничный", HttpStatus.BAD_REQUEST),
 
     OTHER(999, "Other Type of Error. See error message", HttpStatus.INTERNAL_SERVER_ERROR);
 

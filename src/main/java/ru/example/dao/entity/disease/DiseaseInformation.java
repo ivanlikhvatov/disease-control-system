@@ -3,6 +3,7 @@ package ru.example.dao.entity.disease;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import ru.example.dao.entity.user.User;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,6 +18,10 @@ public class DiseaseInformation {
     private String id;
 
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "disease_id")
     private Disease disease;
 
@@ -29,7 +34,5 @@ public class DiseaseInformation {
     private Boolean isApproved;
 
     private Boolean isClosed;
-
-    //TODO как хранить больничный
 
 }
