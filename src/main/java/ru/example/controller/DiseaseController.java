@@ -3,7 +3,8 @@ package ru.example.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import ru.example.dto.request.disease.DiseaseInformationRequest;
+import ru.example.dto.request.disease.AddDiseaseInformationRequest;
+import ru.example.dto.request.disease.EditDiseaseInformationRequest;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.DiseaseResponse;
 import ru.example.dto.response.StatusResult;
@@ -20,7 +21,7 @@ public class DiseaseController {
 
     private final DiseaseService diseaseService;
 
-    @GetMapping
+    @GetMapping//TODO поправить path: student тут лишнее
     public List<DiseaseResponse> getDiseases() {
         return diseaseService.getDiseases();
     }
@@ -31,9 +32,15 @@ public class DiseaseController {
     }
 
     @PostMapping("/info/add")
-    public StatusResult addDiseaseInfo(@RequestBody @Valid DiseaseInformationRequest request,
+    public StatusResult addDiseaseInfo(@RequestBody @Valid AddDiseaseInformationRequest request,
                                        @AuthenticationPrincipal JwtUser jwtUser) {
         return diseaseService.addDiseaseInfo(request, jwtUser);
+    }
+
+    @PostMapping("/info/edit")
+    public StatusResult editDiseaseInfo(@RequestBody @Valid EditDiseaseInformationRequest request,
+                                       @AuthenticationPrincipal JwtUser jwtUser) {
+        return diseaseService.editDiseaseInfo(request, jwtUser);
     }
 
 

@@ -6,7 +6,8 @@ import org.springframework.stereotype.Service;
 import ru.example.dao.entity.disease.Disease;
 import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dao.entity.user.User;
-import ru.example.dto.request.disease.DiseaseInformationRequest;
+import ru.example.dto.request.disease.AddDiseaseInformationRequest;
+import ru.example.dto.request.disease.EditDiseaseInformationRequest;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.DiseaseResponse;
 import ru.example.dto.response.StatusResult;
@@ -42,11 +43,22 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
-    public StatusResult addDiseaseInfo(DiseaseInformationRequest request, JwtUser jwtUser) {
+    public StatusResult addDiseaseInfo(AddDiseaseInformationRequest request, JwtUser jwtUser) {
         User user = userService.getUserByLogin(jwtUser.getLogin());
-        DiseaseInformation diseaseInformation = buildDiseaseInfo(request, user);
+        DiseaseInformation diseaseInformation = buildDiseaseInfoBeforeAdd(request, user);
 
-        checkDiseaseInformation(diseaseInformation);
+        checkDiseaseInformationBeforeAdd(diseaseInformation);
+        diseaseInformationRepository.save(diseaseInformation);
+
+        return StatusResult.ok();
+    }
+
+    @Override
+    public StatusResult editDiseaseInfo(EditDiseaseInformationRequest request, JwtUser jwtUser) {
+        User user = userService.getUserByLogin(jwtUser.getLogin());
+        DiseaseInformation diseaseInformation = buildDiseaseInfoBeforeEdit(request, user);
+
+        checkDiseaseInformationBeforeEdit(diseaseInformation);
         diseaseInformationRepository.save(diseaseInformation);
 
         return StatusResult.ok();
@@ -62,7 +74,7 @@ public class DiseaseServiceImpl implements DiseaseService {
         return diseaseInfoResponseMapper.map(diseaseInformation);
     }
 
-    private DiseaseInformation buildDiseaseInfo(DiseaseInformationRequest request, User user) {
+    private DiseaseInformation buildDiseaseInfoBeforeAdd(AddDiseaseInformationRequest request, User user) {
         DiseaseInformation diseaseInformation = diseaseRequestMapper.map(request);
         diseaseInformation.setIsApproved(Boolean.FALSE);
         diseaseInformation.setIsClosed(Boolean.FALSE);
@@ -71,12 +83,34 @@ public class DiseaseServiceImpl implements DiseaseService {
         return diseaseInformation;
     }
 
-    private void checkDiseaseInformation(DiseaseInformation diseaseInformation) {
+    private DiseaseInformation buildDiseaseInfoBeforeEdit(EditDiseaseInformationRequest request, User user) {
+        DiseaseInformation diseaseInformation = diseaseRequestMapper.map(request);
+        diseaseInformation.setIsApproved(Boolean.FALSE);
+        diseaseInformation.setIsClosed(Boolean.FALSE);
+        diseaseInformation.setUser(user);
+
+        return diseaseInformation;
+    }
+
+    private void checkDiseaseInformationBeforeAdd(DiseaseInformation diseaseInformation) {
         String userId = getUserId(diseaseInformation);
         DiseaseInformation existDiseaseInformation = diseaseInformationRepository.findByUserIdAndIsClosed(userId, Boolean.FALSE);
 
         if (existDiseaseInformation != null) {
             throw new ApiException(ErrorContainer.OLD_DISEASE_IS_NOT_CLOSED);
+        }
+    }
+
+    private void checkDiseaseInformationBeforeEdit(DiseaseInformation diseaseInformation) {
+        String userId = getUserId(diseaseInformation);
+        DiseaseInformation existDiseaseInformation = diseaseInformationRepository.findByUserIdAndIsClosed(userId, Boolean.FALSE);
+
+        if (existDiseaseInformation == null) {
+            throw new ApiException(ErrorContainer.OTHER);
+        }
+
+        if (!StringUtils.equals(diseaseInformation.getId(), existDiseaseInformation.getId())) {
+            throw new ApiException(ErrorContainer.OTHER);
         }
     }
 
