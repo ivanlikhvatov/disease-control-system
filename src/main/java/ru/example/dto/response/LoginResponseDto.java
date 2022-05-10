@@ -16,6 +16,8 @@ public class LoginResponseDto {
 
     private String email;
 
+    private String phoneNumber;
+
     private String firstname;
 
     private String lastname;

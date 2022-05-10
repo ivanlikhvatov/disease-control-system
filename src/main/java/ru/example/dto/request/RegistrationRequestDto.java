@@ -18,6 +18,11 @@ public class RegistrationRequestDto {
     private String email;
 
     @NotBlank
+    @Size(max = 10)
+    @Size(min = 10) //TODO Валидация на номер телефона
+    private String phoneNumber;
+
+    @NotBlank
     @Size(max = 30)
     private String password;
 }
