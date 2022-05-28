@@ -5,7 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ru.example.dao.entity.disease.Disease;
 import ru.example.dao.entity.disease.DiseaseInformation;
+import ru.example.dao.entity.disease.DiseaseStatus;
 import ru.example.dao.entity.user.User;
+import ru.example.dto.request.ApproveDiseaseRequest;
 import ru.example.dto.request.disease.AddDiseaseInformationRequest;
 import ru.example.dto.request.disease.EditDiseaseInformationRequest;
 import ru.example.dto.response.DiseaseInfoResponse;
@@ -65,19 +67,23 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
-    public DiseaseInfoResponse getNotClosedDisease(JwtUser jwtUser) {
+    public StatusResult approveDisease(ApproveDiseaseRequest request, JwtUser jwtUser) {
+        return null;
+    }
+
+    @Override
+    public DiseaseInfoResponse getActiveDisease(JwtUser jwtUser) {
         User user = userService.getUserByLogin(jwtUser.getLogin());
 
         DiseaseInformation diseaseInformation = diseaseInformationRepository
-                .findByUserIdAndIsClosed(user.getId(), Boolean.FALSE);
+                .findByUserIdAndStatus(user.getId(), DiseaseStatus.ACTIVE);
 
         return diseaseInfoResponseMapper.map(diseaseInformation);
     }
 
     private DiseaseInformation buildDiseaseInfoBeforeAdd(AddDiseaseInformationRequest request, User user) {
         DiseaseInformation diseaseInformation = diseaseRequestMapper.map(request);
-        diseaseInformation.setIsApproved(Boolean.FALSE);
-        diseaseInformation.setIsClosed(Boolean.FALSE);
+        diseaseInformation.setStatus(DiseaseStatus.ACTIVE);
         diseaseInformation.setUser(user);
 
         return diseaseInformation;
@@ -85,8 +91,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     private DiseaseInformation buildDiseaseInfoBeforeEdit(EditDiseaseInformationRequest request, User user) {
         DiseaseInformation diseaseInformation = diseaseRequestMapper.map(request);
-        diseaseInformation.setIsApproved(Boolean.FALSE);
-        diseaseInformation.setIsClosed(Boolean.FALSE);
+        diseaseInformation.setStatus(DiseaseStatus.ACTIVE);
         diseaseInformation.setUser(user);
 
         return diseaseInformation;
@@ -94,7 +99,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     private void checkDiseaseInformationBeforeAdd(DiseaseInformation diseaseInformation) {
         String userId = getUserId(diseaseInformation);
-        DiseaseInformation existDiseaseInformation = diseaseInformationRepository.findByUserIdAndIsClosed(userId, Boolean.FALSE);
+        DiseaseInformation existDiseaseInformation = diseaseInformationRepository.findByUserIdAndStatus(userId, DiseaseStatus.ACTIVE);
 
         if (existDiseaseInformation != null) {
             throw new ApiException(ErrorContainer.OLD_DISEASE_IS_NOT_CLOSED);
@@ -103,7 +108,7 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     private void checkDiseaseInformationBeforeEdit(DiseaseInformation diseaseInformation) {
         String userId = getUserId(diseaseInformation);
-        DiseaseInformation existDiseaseInformation = diseaseInformationRepository.findByUserIdAndIsClosed(userId, Boolean.FALSE);
+        DiseaseInformation existDiseaseInformation = diseaseInformationRepository.findByUserIdAndStatus(userId, DiseaseStatus.ACTIVE);
 
         if (existDiseaseInformation == null) {
             throw new ApiException(ErrorContainer.OTHER);

@@ -1,6 +1,7 @@
 package ru.example.dto.response;
 
 import lombok.Data;
+import ru.example.dao.entity.disease.DiseaseStatus;
 
 import java.time.LocalDate;
 
@@ -17,7 +18,5 @@ public class DiseaseInfoResponse {
 
     private LocalDate dateOfRecovery;
 
-    private Boolean isApproved;
-
-    private Boolean isClosed;
+    private DiseaseStatus status;
 }

@@ -1,5 +1,6 @@
 package ru.example.service;
 
+import ru.example.dto.request.ApproveDiseaseRequest;
 import ru.example.dto.request.disease.AddDiseaseInformationRequest;
 import ru.example.dto.request.disease.EditDiseaseInformationRequest;
 import ru.example.dto.response.DiseaseInfoResponse;
@@ -14,7 +15,9 @@ public interface DiseaseService {
 
     StatusResult addDiseaseInfo(AddDiseaseInformationRequest request, JwtUser jwtUser);
 
-    DiseaseInfoResponse getNotClosedDisease(JwtUser jwtUser);
+    DiseaseInfoResponse getActiveDisease(JwtUser jwtUser);
 
     StatusResult editDiseaseInfo(EditDiseaseInformationRequest request, JwtUser jwtUser);
+
+    StatusResult approveDisease(ApproveDiseaseRequest request, JwtUser jwtUser);
 }

@@ -31,8 +31,5 @@ public class DiseaseInformation {
 
     private LocalDate dateOfRecovery;
 
-    private Boolean isApproved;
-
-    private Boolean isClosed;
-
+    private DiseaseStatus status;
 }

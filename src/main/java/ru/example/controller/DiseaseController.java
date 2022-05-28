@@ -3,6 +3,7 @@ package ru.example.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import ru.example.dto.request.ApproveDiseaseRequest;
 import ru.example.dto.request.disease.AddDiseaseInformationRequest;
 import ru.example.dto.request.disease.EditDiseaseInformationRequest;
 import ru.example.dto.response.DiseaseInfoResponse;
@@ -28,7 +29,7 @@ public class DiseaseController {
 
     @GetMapping("/info")
     public DiseaseInfoResponse getNotClosedDisease(@AuthenticationPrincipal JwtUser jwtUser) {
-        return diseaseService.getNotClosedDisease(jwtUser);
+        return diseaseService.getActiveDisease(jwtUser);
     }
 
     @PostMapping("/info/add")
@@ -41,6 +42,12 @@ public class DiseaseController {
     public StatusResult editDiseaseInfo(@RequestBody @Valid EditDiseaseInformationRequest request,
                                        @AuthenticationPrincipal JwtUser jwtUser) {
         return diseaseService.editDiseaseInfo(request, jwtUser);
+    }
+
+    @PostMapping("/approve")
+    public StatusResult approveDisease(@RequestBody @Valid ApproveDiseaseRequest request,
+                                       @AuthenticationPrincipal JwtUser jwtUser) {
+        return diseaseService.approveDisease(request, jwtUser);
     }
 
 
