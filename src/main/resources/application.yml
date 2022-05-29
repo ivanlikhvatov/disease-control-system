@@ -47,3 +47,7 @@ jwt:
     secret: jwtappdemo
     duration:
       minutes: 30
+
+
+upload:
+  path: /Users/ivanlikhvatov/AllProjects/JavaProjects/SpringRestProjects/disease-control-system/uploads/

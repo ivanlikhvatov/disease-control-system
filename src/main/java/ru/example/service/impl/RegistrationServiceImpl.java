@@ -51,6 +51,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         user.setPassword(request.getPassword());
         user.setActivationCode(UUID.randomUUID().toString());
         user.setActivationCodeExpirationDate(codeExpiration);
+        user.setPhoneNumber(request.getPhoneNumber());
 
         return user;
     }

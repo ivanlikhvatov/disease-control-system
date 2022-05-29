@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 public enum MailMessages {
 
     CONFIRM_ACCOUNT("Уважаемый %s, приветствуем Вас в системе контроля заболеваемости. Пожалуйста посетите следующую ссылку, чтобы активировать свой аккаунт: %s"),
-    SUCCESS_ACTIVATION("Уважаемый %s, Вы успешно зарегистрировались в системе контроля заболеваемости. Для входа на сайт пройдите по ссылке: %s");
+    SUCCESS_ACTIVATION("Уважаемый %s, Вы успешно зарегистрировались в системе контроля заболеваемости. Для входа на сайт пройдите по ссылке: %s"),
+    DISEASE_PROCESSED("Уважаемый %s, информация о Вашем заболевании обрабатывается, вы можете следить за статусом в истории заболеваний"),
+    DISEASE_APPROVED("Уважаемый %s, информация о Вашем заболевании успешно подтверждена");
 
     private final String text;
 
@@ -25,6 +27,20 @@ public enum MailMessages {
                 SUCCESS_ACTIVATION.getText(),
                 fullName,
                 url
+        );
+    }
+
+    public static String createDiseaseProcessedMessage(String userName) {
+        return String.format(
+                DISEASE_PROCESSED.getText(),
+                userName
+        );
+    }
+
+    public static String createDiseaseApprovedMessage(String userName) {
+        return String.format(
+                DISEASE_APPROVED.getText(),
+                userName
         );
     }
 }

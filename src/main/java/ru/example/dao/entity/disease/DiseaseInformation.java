@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import ru.example.dao.entity.user.User;
+import ru.example.dto.request.disease.ApproveType;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -32,4 +33,12 @@ public class DiseaseInformation {
     private LocalDate dateOfRecovery;
 
     private DiseaseStatus status;
+
+    private ApproveType approveType;
+
+    private String scannedCertificatePath;
+
+    private String electronicSickId;
+
+    private String rejectCause;
 }

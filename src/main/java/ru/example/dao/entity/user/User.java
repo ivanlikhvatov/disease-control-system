@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import ru.example.dao.entity.Status;
 import ru.example.dao.entity.group.Group;
+import ru.example.dao.entity.institute.Institute;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -63,4 +64,8 @@ public class User {
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "institute_id")
+    private Institute institute;
 }

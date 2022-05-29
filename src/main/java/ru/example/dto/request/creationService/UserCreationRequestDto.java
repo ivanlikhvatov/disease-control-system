@@ -34,6 +34,9 @@ public class UserCreationRequestDto {
     @Valid
     private GroupRequest group;
 
+    @Valid
+    private InstituteRequest institute;
+
     @NotNull
     private Set<Role> roles;
 
@@ -44,5 +47,14 @@ public class UserCreationRequestDto {
         }
 
         return !roles.contains(Role.STUDENT) || group != null;
+    }
+
+    @AssertTrue
+    public boolean isInstitute() {
+        if (roles == null) {
+            return true;
+        }
+
+        return !roles.contains(Role.DECANAT) || institute != null;
     }
 }

@@ -9,9 +9,9 @@ import lombok.Getter;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum DiseaseStatus {
     ACTIVE("Активно"),
-    APPROVED_BY_SICK("Подтверждено больным"),
+    APPROVED("Подтверждено"),
     PROCESSED("Обрабатывается"),
-    CLOSED("Закрыто");
+    REJECTED("Отклонено");
 
     private final String description;
 

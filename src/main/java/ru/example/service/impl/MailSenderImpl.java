@@ -73,6 +73,22 @@ public class MailSenderImpl implements MailSender {
         send(user.getEmail(), MailSubjects.SUCCESS_ACTIVATION.getText(), message);
     }
 
+    @Override
+    public void sendDiseaseProcessedMessage(User user) {
+        String userName = buildUserName(user);
+        String message = MailMessages.createDiseaseProcessedMessage(userName);
+
+        send(user.getEmail(), MailSubjects.DISEASE_PROCESSED.getText(), message);
+    }
+
+    @Override
+    public void sendDiseaseApprovedMessage(User user) {
+        String userName = buildUserName(user);
+        String message = MailMessages.createDiseaseApprovedMessage(userName);
+
+        send(user.getEmail(), MailSubjects.DISEASE_APPROVED.getText(), message);
+    }
+
     private void send(String emailTo, String subject, String message){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 

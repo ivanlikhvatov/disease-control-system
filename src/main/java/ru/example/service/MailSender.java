@@ -7,4 +7,8 @@ public interface MailSender {
     void sendConfirmationMessage(User user);
 
     void sendSuccessActivationMessage(User user);
+
+    void sendDiseaseProcessedMessage(User user);
+
+    void sendDiseaseApprovedMessage(User user);
 }
