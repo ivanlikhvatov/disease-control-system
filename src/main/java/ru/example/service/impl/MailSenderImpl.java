@@ -89,6 +89,22 @@ public class MailSenderImpl implements MailSender {
         send(user.getEmail(), MailSubjects.DISEASE_APPROVED.getText(), message);
     }
 
+    @Override
+    public void sendDiseaseRefundToUserMessage(User user, String refundCause) {
+        String userName = buildUserName(user);
+        String message = MailMessages.createDiseaseRefundToUserMessage(userName, refundCause);
+
+        send(user.getEmail(), MailSubjects.DISEASE_REFUND.getText(), message);
+    }
+
+    @Override
+    public void sendDiseaseRejectMessage(User user, String rejectCause) {
+        String userName = buildUserName(user);
+        String message = MailMessages.createDiseaseRejectMessage(userName, rejectCause);
+
+        send(user.getEmail(), MailSubjects.DISEASE_REJECT.getText(), message);
+    }
+
     private void send(String emailTo, String subject, String message){
         SimpleMailMessage mailMessage = new SimpleMailMessage();
 
@@ -105,10 +121,8 @@ public class MailSenderImpl implements MailSender {
     }
 
     private String buildUserName(User user) {
-        return String.format(
-                user.getFirstname(),
-                SPACE,
-                user.getPatronymic()
-        );
+        return user.getFirstname()
+                .concat(SPACE)
+                .concat(user.getPatronymic());
     }
 }

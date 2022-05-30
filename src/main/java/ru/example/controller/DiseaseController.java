@@ -44,10 +44,10 @@ public class DiseaseController {
         return diseaseService.editDiseaseInfo(request, jwtUser);
     }
 
-    @PostMapping("/approve")
-    public StatusResult approveDisease(@RequestBody @Valid ApproveDiseaseRequest request,
+    @PostMapping("/info/approve/bySick")
+    public StatusResult approveDiseaseBySick(@RequestBody @Valid ApproveDiseaseRequest request,
                                        @AuthenticationPrincipal JwtUser jwtUser) {
-        return diseaseService.approveDisease(request, jwtUser);
+        return diseaseService.approveDiseaseBySick(request, jwtUser);
     }
 
 

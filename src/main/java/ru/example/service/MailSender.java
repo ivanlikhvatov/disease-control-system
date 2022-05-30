@@ -11,4 +11,8 @@ public interface MailSender {
     void sendDiseaseProcessedMessage(User user);
 
     void sendDiseaseApprovedMessage(User user);
+
+    void sendDiseaseRefundToUserMessage(User user, String refundCause);
+
+    void sendDiseaseRejectMessage(User user, String rejectCause);
 }

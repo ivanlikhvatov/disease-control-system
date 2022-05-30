@@ -19,5 +19,13 @@ public interface DiseaseService {
 
     StatusResult editDiseaseInfo(EditDiseaseInformationRequest request, JwtUser jwtUser);
 
-    StatusResult approveDisease(ApproveDiseaseRequest request, JwtUser jwtUser);
+    StatusResult approveDiseaseBySick(ApproveDiseaseRequest request, JwtUser jwtUser);
+
+    List<DiseaseInfoResponse> getProcessedDiseases(JwtUser jwtUser);
+
+    StatusResult approveDiseaseByDecanat(String diseaseId, JwtUser jwtUser);
+
+    StatusResult refundDiseaseToStudent(String diseaseId, String refundCause);
+
+    StatusResult rejectDisease(String diseaseId, String rejectCause, JwtUser jwtUser);
 }

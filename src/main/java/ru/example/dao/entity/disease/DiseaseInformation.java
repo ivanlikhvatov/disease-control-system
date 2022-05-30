@@ -36,9 +36,17 @@ public class DiseaseInformation {
 
     private ApproveType approveType;
 
-    private String scannedCertificatePath;
+    private String scannedCertificateFileName;
 
     private String electronicSickId;
 
     private String rejectCause;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "reject_author_id")
+    private User rejectAuthor;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "approve_author_id")
+    private User approveAuthor;
 }
