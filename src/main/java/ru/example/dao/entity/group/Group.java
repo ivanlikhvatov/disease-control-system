@@ -19,6 +19,7 @@ public class Group {
 
     private String name;
 
+    //TODO изменить на String
     private Integer course;
 
     @Enumerated(EnumType.STRING)

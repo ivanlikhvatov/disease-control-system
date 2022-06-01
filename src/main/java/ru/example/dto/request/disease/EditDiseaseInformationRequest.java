@@ -22,10 +22,6 @@ public class EditDiseaseInformationRequest {
 
     private LocalDate dateOfRecovery;
 
-    private Boolean isApproved;
-
-    private Boolean isClosed;
-
     @AssertTrue
     public boolean isDiseaseOrOtherDiseaseInformation() {
         return disease != null || StringUtils.isNotBlank(otherDiseaseInformation);

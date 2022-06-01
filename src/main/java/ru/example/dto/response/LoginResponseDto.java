@@ -3,6 +3,7 @@ package ru.example.dto.response;
 import lombok.Data;
 import ru.example.dao.entity.Status;
 import ru.example.dao.entity.user.Role;
+import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfoResponse;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -33,4 +34,11 @@ public class LoginResponseDto {
     private Status status;
 
     private Set<Role> roles;
+
+    //TODO перенести это в decanatAdditionalInfo
+    private InstituteResponse institute;
+
+    private DecanatAdditionalInfoResponse decanatAdditionalInfo;
+
+//    private StudentAdditionalInfoResponse studentAdditionalInfo;
 }

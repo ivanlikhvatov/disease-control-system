@@ -49,4 +49,14 @@ public class DiseaseInformation {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "approve_author_id")
     private User approveAuthor;
+
+    //TODO удалить
+    @Override
+    public String toString() {
+        return "DiseaseInformation{" +
+                "id='" + id + '\'' +
+                ", dateOfDisease=" + dateOfDisease +
+                ", dateOfRecovery=" + dateOfRecovery +
+                '}';
+    }
 }
