@@ -33,4 +33,9 @@ public class LoginResponseDto {
     private Status status;
 
     private Set<Role> roles;
+
+    //TODO перенести это в decanatAdditionalInfo
+    private InstituteResponse institute;
+
+    private UserAdditionalInfo additionalInfo;
 }

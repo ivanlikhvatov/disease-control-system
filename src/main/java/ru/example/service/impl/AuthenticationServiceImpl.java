@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.example.dao.entity.Status;
 import ru.example.dto.request.AuthenticationRequestDto;
 import ru.example.dto.response.LoginResponseDto;
+import ru.example.dto.response.UserAdditionalInfo;
 import ru.example.dto.response.UserInfoDto;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
@@ -24,6 +25,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final LoginResponseDtoMapper mapper;
 
 
+    //TODO почему здесь возвращаю LoginResponseDto а не AuthenticationRequestDto (потому что userInfo возвращается в сервисах по запросу не личной информации(не содержит токен))
     @Override
     public LoginResponseDto loginUser(AuthenticationRequestDto request) {
         String login = request.getLogin();
@@ -40,7 +42,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         String token = jwtTokenProvider.createToken(request.getLogin(), user.getRoles());
 
-        return mapper.map(user, token);
+        LoginResponseDto loginResponseDto = mapper.map(user, token);
+        UserAdditionalInfo additionalInfo = userService.getUserAdditionalInfo(user);
+        loginResponseDto.setAdditionalInfo(additionalInfo);
+
+        return loginResponseDto;
     }
 
     private void authenticateUser(UsernamePasswordAuthenticationToken authenticationToken) {

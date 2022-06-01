@@ -3,6 +3,7 @@ package ru.example.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.example.dao.entity.directionProfile.DirectionProfile;
@@ -35,6 +36,7 @@ import ru.example.service.UserService;
 import ru.example.utils.Base64Converter;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +52,15 @@ public class DiseaseServiceImpl implements DiseaseService {
     private final DiseaseResponseMapper diseaseResponseMapper;
     private final DiseaseRequestMapper diseaseRequestMapper;
     private final DiseaseInfoResponseMapper diseaseInfoResponseMapper;
-    private final UserService userService;
     private final MailSender mailSender;
     private final FileService fileService;
+
+    private UserService userService;
+
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -107,8 +115,9 @@ public class DiseaseServiceImpl implements DiseaseService {
                 .findAllByStatus(DiseaseStatus.PROCESSED);
 
         User decanatUser = userService.getUserByLogin(jwtUser.getLogin());
+        String decanatInstituteId = getDecanatInstituteId(decanatUser);
 
-        List<DiseaseInformation> diseaseFromNeedInstitute = getDiseaseFromNeedInstitute(processedDiseases, decanatUser);
+        List<DiseaseInformation> diseaseFromNeedInstitute = getDiseaseFromNeedInstitute(processedDiseases, decanatInstituteId);
 
         return buildDiseasesResponseWithScannedCertificate(diseaseFromNeedInstitute);
     }
@@ -158,6 +167,31 @@ public class DiseaseServiceImpl implements DiseaseService {
         return StatusResult.ok();
     }
 
+
+    @Override
+    public List<DiseaseInformation> getNotRejectedDiseasesByInstitute(String instituteId) {
+        List<DiseaseInformation> diseaseInformationActiveAfterStartDate = diseaseInformationRepository.findAllByStatusIsNot(DiseaseStatus.REJECTED);
+        return getDiseaseFromNeedInstitute(diseaseInformationActiveAfterStartDate, instituteId);
+    }
+
+    @Override
+    public List<DiseaseInformation> getDiseasesInStatus(DiseaseStatus active) {
+        return diseaseInformationRepository.findAllByStatus(active);
+    }
+
+    @Override
+    public List<DiseaseInfoResponse> getActiveDiseases(JwtUser jwtUser) {
+        List<DiseaseInformation> processedDiseases = diseaseInformationRepository
+                .findAllByStatus(DiseaseStatus.ACTIVE);
+
+        User decanatUser = userService.getUserByLogin(jwtUser.getLogin());
+        String decanatInstituteId = getDecanatInstituteId(decanatUser);
+
+        List<DiseaseInformation> diseaseFromNeedInstitute = getDiseaseFromNeedInstitute(processedDiseases, decanatInstituteId);
+
+        return diseaseInfoResponseMapper.map(diseaseFromNeedInstitute);
+    }
+
     private void sendNotificationAboutDiseaseReject(DiseaseInformation diseaseInformation, String rejectCause) {
         String userId = getUserId(diseaseInformation);
         User user = userService.getById(userId);
@@ -189,19 +223,17 @@ public class DiseaseServiceImpl implements DiseaseService {
         mailSender.sendDiseaseApprovedMessage(user);
     }
 
-    private List<DiseaseInformation> getDiseaseFromNeedInstitute(List<DiseaseInformation> processedDiseases, User decanatUser) {
+    private List<DiseaseInformation> getDiseaseFromNeedInstitute(List<DiseaseInformation> processedDiseases, String instituteId) {
         return Optional.ofNullable(processedDiseases)
                 .orElse(Collections.emptyList())
                 .stream()
-                .filter(diseaseInformation -> isDecanatInstitute(diseaseInformation, decanatUser))
+                .filter(diseaseInformation -> isDecanatInstitute(diseaseInformation, instituteId))
                 .collect(Collectors.toList());
     }
 
-    private boolean isDecanatInstitute(DiseaseInformation diseaseInformation, User decanatUser) {
+    private boolean isDecanatInstitute(DiseaseInformation diseaseInformation, String instituteId) {
         String sickInstituteId = getSickInstituteId(diseaseInformation);
-        String decanatInstituteId = getDecanatInstituteId(decanatUser);
-
-        return decanatInstituteId.equals(sickInstituteId);
+        return instituteId.equals(sickInstituteId);
     }
 
     private String getDecanatInstituteId(User decanatUser) {

@@ -1,6 +1,7 @@
 package ru.example.service;
 
 import ru.example.dao.entity.user.User;
+import ru.example.dto.response.UserAdditionalInfo;
 import ru.example.dto.response.UserInfoDto;
 
 import java.util.List;
@@ -13,4 +14,6 @@ public interface UserService {
     User getUserByLogin(String login);
 
     User getById(String id);
+
+    UserAdditionalInfo getUserAdditionalInfo(UserInfoDto userInfoDto);
 }

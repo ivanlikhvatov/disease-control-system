@@ -3,7 +3,6 @@ package ru.example.dto.request.disease;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import ru.example.dao.entity.group.EducationType;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
 
