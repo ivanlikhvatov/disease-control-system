@@ -3,6 +3,7 @@ package ru.example.dao.entity.instituteDirection;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import ru.example.dao.entity.department.Department;
 import ru.example.dao.entity.directionProfile.DirectionProfile;
 import ru.example.dao.entity.institute.Institute;
 
@@ -24,4 +25,8 @@ public class InstituteDirection {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "institute_id")
     private Institute institute;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "department_id")
+    private Department department;
 }

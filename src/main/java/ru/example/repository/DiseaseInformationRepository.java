@@ -12,7 +12,9 @@ public interface DiseaseInformationRepository extends JpaRepository<DiseaseInfor
 
     List<DiseaseInformation> findAllByStatus(DiseaseStatus status);
 
-    List<DiseaseInformation> findAllByDateOfDiseaseAfter(LocalDate date);
-
     List<DiseaseInformation> findAllByStatusIsNot(DiseaseStatus status);
+
+    List<DiseaseInformation> findAllByDateOfDiseaseEquals(LocalDate date);
+
+    List<DiseaseInformation> findAllByDateOfRecoveryEquals(LocalDate date);
 }

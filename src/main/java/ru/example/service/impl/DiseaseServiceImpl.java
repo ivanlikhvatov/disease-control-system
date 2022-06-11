@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.example.dao.entity.department.Department;
 import ru.example.dao.entity.directionProfile.DirectionProfile;
 import ru.example.dao.entity.disease.Disease;
 import ru.example.dao.entity.disease.DiseaseInformation;
@@ -21,6 +22,7 @@ import ru.example.dto.request.disease.EditDiseaseInformationRequest;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.DiseaseResponse;
 import ru.example.dto.response.StatusResult;
+import ru.example.dto.response.UserInfoDto;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
 import ru.example.mapper.DiseaseInfoResponseMapper;
@@ -180,6 +182,12 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
+    public List<DiseaseInformation> getDiseasesInStatusByInstitute(DiseaseStatus active, String instituteId) {
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByStatus(active);
+        return getDiseaseFromNeedInstitute(diseaseInformationList, instituteId);
+    }
+
+    @Override
     public List<DiseaseInfoResponse> getActiveDiseases(JwtUser jwtUser) {
         List<DiseaseInformation> processedDiseases = diseaseInformationRepository
                 .findAllByStatus(DiseaseStatus.ACTIVE);
@@ -190,6 +198,24 @@ public class DiseaseServiceImpl implements DiseaseService {
         List<DiseaseInformation> diseaseFromNeedInstitute = getDiseaseFromNeedInstitute(processedDiseases, decanatInstituteId);
 
         return diseaseInfoResponseMapper.map(diseaseFromNeedInstitute);
+    }
+
+    @Override
+    public List<DiseaseInformation> getDiseasesInStatusByDepartment(DiseaseStatus status, String departmentId) {
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByStatus(status);
+        return getDiseaseFromNeedDepartment(diseaseInformationList, departmentId);
+    }
+
+    @Override
+    public List<DiseaseInformation> getRecoverTodayDiseasesByInstitute(String instituteId) {
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByDateOfRecoveryEquals(LocalDate.now());
+        return getDiseaseFromNeedInstitute(diseaseInformationList, instituteId);
+    }
+
+    @Override
+    public List<DiseaseInformation> getSickTodayDiseasesByInstitute(String instituteId) {
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByDateOfDiseaseEquals(LocalDate.now());
+        return getDiseaseFromNeedInstitute(diseaseInformationList, instituteId);
     }
 
     private void sendNotificationAboutDiseaseReject(DiseaseInformation diseaseInformation, String rejectCause) {
@@ -229,6 +255,30 @@ public class DiseaseServiceImpl implements DiseaseService {
                 .stream()
                 .filter(diseaseInformation -> isDecanatInstitute(diseaseInformation, instituteId))
                 .collect(Collectors.toList());
+    }
+
+    private List<DiseaseInformation> getDiseaseFromNeedDepartment(List<DiseaseInformation> processedDiseases, String departmentId) {
+        return Optional.ofNullable(processedDiseases)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(diseaseInformation -> isNeedDepartment(diseaseInformation, departmentId))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isNeedDepartment(DiseaseInformation diseaseInformation, String departmentId) {
+        String sickDepartmentId = getSickDepartmentId(diseaseInformation);
+        return departmentId.equals(sickDepartmentId);
+    }
+
+    private String getSickDepartmentId(DiseaseInformation diseaseInformation) {
+        return Optional.ofNullable(diseaseInformation)
+                .map(DiseaseInformation::getUser)
+                .map(User::getGroup)
+                .map(Group::getDirectionProfile)
+                .map(DirectionProfile::getInstituteDirection)
+                .map(InstituteDirection::getDepartment)
+                .map(Department::getId)
+                .orElse(StringUtils.EMPTY);
     }
 
     private boolean isDecanatInstitute(DiseaseInformation diseaseInformation, String instituteId) {

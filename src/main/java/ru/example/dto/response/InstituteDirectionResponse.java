@@ -12,4 +12,6 @@ public class InstituteDirectionResponse {
     private String shortName;
 
     private InstituteResponse institute;
+
+    private DepartmentResponse department;
 }

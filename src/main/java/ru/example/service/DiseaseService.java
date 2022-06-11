@@ -8,6 +8,7 @@ import ru.example.dto.request.disease.EditDiseaseInformationRequest;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.DiseaseResponse;
 import ru.example.dto.response.StatusResult;
+import ru.example.dto.response.UserInfoDto;
 import ru.example.security.jwt.JwtUser;
 
 import java.time.LocalDate;
@@ -34,7 +35,15 @@ public interface DiseaseService {
 
     List<DiseaseInformation> getNotRejectedDiseasesByInstitute(String instituteId);
 
+    List<DiseaseInformation> getDiseasesInStatusByInstitute(DiseaseStatus active, String instituteId);
+
     List<DiseaseInformation> getDiseasesInStatus(DiseaseStatus active);
 
     List<DiseaseInfoResponse> getActiveDiseases(JwtUser jwtUser);
+
+    List<DiseaseInformation> getDiseasesInStatusByDepartment(DiseaseStatus status, String departmentId);
+
+    List<DiseaseInformation> getRecoverTodayDiseasesByInstitute(String instituteId);
+
+    List<DiseaseInformation> getSickTodayDiseasesByInstitute(String instituteId);
 }
