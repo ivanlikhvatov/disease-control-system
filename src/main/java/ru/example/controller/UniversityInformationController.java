@@ -16,15 +16,19 @@ import ru.example.service.InstituteService;
 
 import java.util.List;
 
+
+//TODO не нужный сервис
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/university")
 public class UniversityInformationController {
 
-    @GetMapping("/institutes")
-    public List<InstituteResponse> getInstitutesInfo() {
-        return null;
-    }
+    private final GroupService groupService;
+
+//    @GetMapping("/groups")
+//    public List<GroupResponse> getGroups() {
+//        return groupService.getAllGroups();
+//    }
 
 
 }

@@ -31,6 +31,10 @@ public interface DiseaseService {
 
     List<DiseaseInformation> getDiseaseFromNeedInstitute(List<DiseaseInformation> processedDiseases, String decanatInstituteId);
 
+    List<DiseaseInformation> getDiseaseFromNeedDepartment(List<DiseaseInformation> processedDiseases, String departmentId);
+
+    List<DiseaseInformation> getDiseaseFromNeedGroup(List<DiseaseInformation> diseases, String groupId);
+
     List<DiseaseInfoResponse> buildDiseasesResponseWithScannedCertificate(List<DiseaseInformation> processedDiseases);
 
     List<DiseaseInformation> getAllDiseasesInformation();
@@ -40,4 +44,6 @@ public interface DiseaseService {
     void saveDisease(DiseaseInformation diseaseInformation);
 
     void deleteScansFromUploads(String scannedCertificateFileName);
+
+    List<DiseaseInformation> getNotRejectedDiseasesByGroup(String groupId);
 }

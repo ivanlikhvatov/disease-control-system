@@ -79,11 +79,29 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
-    public List<DiseaseInformation> getDiseaseFromNeedInstitute(List<DiseaseInformation> processedDiseases, String instituteId) {
+    public List<DiseaseInformation> getDiseaseFromNeedInstitute(List<DiseaseInformation> diseases, String instituteId) {
+        return Optional.ofNullable(diseases)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(diseaseInformation -> isNeedInstitute(diseaseInformation, instituteId))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DiseaseInformation> getDiseaseFromNeedGroup(List<DiseaseInformation> diseases, String groupId) {
+        return Optional.ofNullable(diseases)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(diseaseInformation -> isNeedGroup(diseaseInformation, groupId))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<DiseaseInformation> getDiseaseFromNeedDepartment(List<DiseaseInformation> processedDiseases, String departmentId) {
         return Optional.ofNullable(processedDiseases)
                 .orElse(Collections.emptyList())
                 .stream()
-                .filter(diseaseInformation -> isDecanatInstitute(diseaseInformation, instituteId))
+                .filter(diseaseInformation -> isNeedDepartment(diseaseInformation, departmentId))
                 .collect(Collectors.toList());
     }
 
@@ -110,8 +128,14 @@ public class DiseaseServiceImpl implements DiseaseService {
 
     @Override
     public List<DiseaseInformation> getNotRejectedDiseasesByInstitute(String instituteId) {
-        List<DiseaseInformation> diseaseInformationActiveAfterStartDate = diseaseInformationRepository.findAllByStatusIsNot(DiseaseStatus.REJECTED);
-        return getDiseaseFromNeedInstitute(diseaseInformationActiveAfterStartDate, instituteId);
+        List<DiseaseInformation> notRejectedDiseasesInfo = diseaseInformationRepository.findAllByStatusIsNot(DiseaseStatus.REJECTED);
+        return getDiseaseFromNeedInstitute(notRejectedDiseasesInfo, instituteId);
+    }
+
+    @Override
+    public List<DiseaseInformation> getNotRejectedDiseasesByGroup(String groupId) {
+        List<DiseaseInformation> notRejectedDiseasesInfo = diseaseInformationRepository.findAllByStatusIsNot(DiseaseStatus.REJECTED);
+        return getDiseaseFromNeedGroup(notRejectedDiseasesInfo, groupId);
     }
 
     @Override
@@ -155,46 +179,6 @@ public class DiseaseServiceImpl implements DiseaseService {
         }
     }
 
-    private List<DiseaseInformation> getDiseaseFromNeedDepartment(List<DiseaseInformation> processedDiseases, String departmentId) {
-        return Optional.ofNullable(processedDiseases)
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(diseaseInformation -> isNeedDepartment(diseaseInformation, departmentId))
-                .collect(Collectors.toList());
-    }
-
-    private boolean isNeedDepartment(DiseaseInformation diseaseInformation, String departmentId) {
-        String sickDepartmentId = getSickDepartmentId(diseaseInformation);
-        return departmentId.equals(sickDepartmentId);
-    }
-
-    private String getSickDepartmentId(DiseaseInformation diseaseInformation) {
-        return Optional.ofNullable(diseaseInformation)
-                .map(DiseaseInformation::getUser)
-                .map(User::getGroup)
-                .map(Group::getDirectionProfile)
-                .map(DirectionProfile::getInstituteDirection)
-                .map(InstituteDirection::getDepartment)
-                .map(Department::getId)
-                .orElse(StringUtils.EMPTY);
-    }
-
-    private boolean isDecanatInstitute(DiseaseInformation diseaseInformation, String instituteId) {
-        String sickInstituteId = getSickInstituteId(diseaseInformation);
-        return instituteId.equals(sickInstituteId);
-    }
-
-    private String getSickInstituteId(DiseaseInformation diseaseInformation) {
-        return Optional.ofNullable(diseaseInformation)
-                .map(DiseaseInformation::getUser)
-                .map(User::getGroup)
-                .map(Group::getDirectionProfile)
-                .map(DirectionProfile::getInstituteDirection)
-                .map(InstituteDirection::getInstitute)
-                .map(Institute::getId)
-                .orElse(StringUtils.EMPTY);
-    }
-
     private DiseaseInfoResponse addBase64ScannedCertificate(DiseaseInfoResponse diseaseInfo) {
 
         if (StringUtils.isBlank(diseaseInfo.getScannedCertificateFileName())) {
@@ -208,5 +192,50 @@ public class DiseaseServiceImpl implements DiseaseService {
         diseaseInfo.setScannedCertificateInBase64(pdfInBase64);
 
         return diseaseInfo;
+    }
+
+    private boolean isNeedInstitute(DiseaseInformation diseaseInformation, String instituteId) {
+        String sickInstituteId = getSickInstituteId(diseaseInformation);
+        return instituteId.equals(sickInstituteId);
+    }
+
+    private boolean isNeedDepartment(DiseaseInformation diseaseInformation, String departmentId) {
+        String sickDepartmentId = getSickDepartmentId(diseaseInformation);
+        return departmentId.equals(sickDepartmentId);
+    }
+
+    private boolean isNeedGroup(DiseaseInformation diseaseInformation, String groupId) {
+        String sickGroupId = getSickGroupId(diseaseInformation);
+        return groupId.equals(sickGroupId);
+    }
+
+    private String getSickInstituteId(DiseaseInformation diseaseInformation) {
+        return Optional.ofNullable(diseaseInformation)
+                .map(DiseaseInformation::getUser)
+                .map(User::getGroup)
+                .map(Group::getDirectionProfile)
+                .map(DirectionProfile::getInstituteDirection)
+                .map(InstituteDirection::getInstitute)
+                .map(Institute::getId)
+                .orElse(StringUtils.EMPTY);
+    }
+
+    private String getSickDepartmentId(DiseaseInformation diseaseInformation) {
+        return Optional.ofNullable(diseaseInformation)
+                .map(DiseaseInformation::getUser)
+                .map(User::getGroup)
+                .map(Group::getDirectionProfile)
+                .map(DirectionProfile::getInstituteDirection)
+                .map(InstituteDirection::getDepartment)
+                .map(Department::getId)
+                .orElse(StringUtils.EMPTY);
+    }
+
+    private String getSickGroupId(DiseaseInformation diseaseInformation) {
+        return Optional.ofNullable(diseaseInformation)
+                .map(DiseaseInformation::getUser)
+                .map(User::getGroup)
+                .map(Group::getId)
+                .orElse(StringUtils.EMPTY);
     }
 }

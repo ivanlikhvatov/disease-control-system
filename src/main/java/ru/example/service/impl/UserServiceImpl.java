@@ -3,11 +3,11 @@ package ru.example.service.impl;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.dao.entity.user.Role;
 import ru.example.dao.entity.user.User;
+import ru.example.dto.response.UniversityInfo;
 import ru.example.dto.response.UserAdditionalInfo;
 import ru.example.dto.response.UserInfoDto;
 import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfo;
@@ -17,7 +17,6 @@ import ru.example.mapper.UserInfoResponseDtoMapper;
 import ru.example.repository.DepartmentRepository;
 import ru.example.repository.UserRepository;
 import ru.example.service.DecanatService;
-import ru.example.service.DiseaseService;
 import ru.example.service.UserService;
 
 import java.util.*;
@@ -41,11 +40,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserInfoDto getUserInfoDtoByLogin(String login) {
-        User user = userRepository.findByLogin(login);
-
-        if (user == null) {
-            throw new ApiException(ErrorContainer.USER_NOT_FOUND);
-        }
+        User user = getUserByLogin(login);
 
         UserInfoDto userInfoDto = mapper.map(user);
         UserAdditionalInfo userAdditionalInfo = getUserAdditionalInfo(userInfoDto);
@@ -63,7 +58,9 @@ public class UserServiceImpl implements UserService {
 
         if (userInfoDto.getRoles().contains(Role.DECANAT)) {
             DecanatAdditionalInfo decanatAdditionalInfo = decanatService.buildDecanatAdditionalInfo(userInfoDto);
+            UniversityInfo universityInfo = decanatService.buildUniversityInfo(userInfoDto);
             userAdditionalInfo.setDecanatAdditionalInfo(decanatAdditionalInfo);
+            userAdditionalInfo.setUniversityInfo(universityInfo);
         }
 
         return userAdditionalInfo;

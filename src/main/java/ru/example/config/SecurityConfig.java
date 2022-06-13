@@ -34,6 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${api.endpoints.roleDecanat}")
     private String[] roleDecanat;
 
+    @Value("${api.endpoints.graphics}")
+    private String[] graphics;
+
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final AccessDeniedHandler accessDeniedHandler;
@@ -62,6 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .hasAuthority(Role.STUDENT.name())
                 .antMatchers(roleDecanat)
                 .hasAuthority(Role.DECANAT.name())
+                .antMatchers(graphics)
+                .hasAnyAuthority(Role.DECANAT.name(), Role.RECTORAT.name(), Role.TEACHER.name(), Role.CURATOR.name())
                 .anyRequest()
                 .authenticated()
                 .and()

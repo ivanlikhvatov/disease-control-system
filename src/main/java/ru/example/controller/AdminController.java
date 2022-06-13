@@ -47,7 +47,7 @@ public class AdminController {
 
     @GetMapping("/profiles/{profileId}/groups")
     public List<GroupResponse> getGroups(@PathVariable String profileId) {
-        return groupService.getGroups(profileId);
+        return groupService.getAllGroups(profileId);
     }
 
 }

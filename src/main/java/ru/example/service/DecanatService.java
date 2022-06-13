@@ -4,6 +4,7 @@ import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dao.entity.disease.DiseaseStatus;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.StatusResult;
+import ru.example.dto.response.UniversityInfo;
 import ru.example.dto.response.UserInfoDto;
 import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfo;
 import ru.example.security.jwt.JwtUser;
@@ -24,4 +25,6 @@ public interface DecanatService {
     StatusResult rejectDisease(String diseaseId, String rejectCause, JwtUser jwtUser);
 
     DecanatAdditionalInfo buildDecanatAdditionalInfo(UserInfoDto userInfoDto);
+
+    UniversityInfo buildUniversityInfo(UserInfoDto userInfoDto);
 }

@@ -31,6 +31,8 @@ api:
       /api/v1/student/**
     roleDecanat:
       /api/v1/decanat/**
+    graphics:
+      /api/v1/graphics/**
     permitAll:
       /api/v1/auth/login,
       /api/v1/auth/registration,

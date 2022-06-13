@@ -4,39 +4,26 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import ru.example.dao.entity.department.Department;
 import ru.example.dao.entity.disease.Disease;
 import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dao.entity.disease.DiseaseStatus;
 import ru.example.dao.entity.institute.Institute;
-import ru.example.dao.entity.instituteDirection.InstituteDirection;
 import ru.example.dao.entity.user.User;
-import ru.example.dto.response.DiseaseInfoResponse;
-import ru.example.dto.response.InstituteResponse;
-import ru.example.dto.response.StatusResult;
-import ru.example.dto.response.UserInfoDto;
-import ru.example.dto.response.decanatAdditionalInfo.CountOfDiseasesByDays;
+import ru.example.dto.response.*;
+import ru.example.dto.response.graphics.CountOfDiseasesByDays;
 import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfo;
 import ru.example.dto.response.decanatAdditionalInfo.DepartmentCountOfSick;
 import ru.example.dto.response.decanatAdditionalInfo.DiseaseTypeCountOfSick;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
 import ru.example.mapper.DiseaseInfoResponseMapper;
-import ru.example.repository.InstituteDirectionRepository;
 import ru.example.repository.UserRepository;
 import ru.example.security.jwt.JwtUser;
-import ru.example.service.DecanatService;
-import ru.example.service.DiseaseService;
-import ru.example.service.MailSender;
+import ru.example.service.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 @Slf4j
@@ -44,16 +31,16 @@ import java.util.stream.IntStream;
 public class DecanatServiceImpl implements DecanatService {
 
     private final static int TWO_WEEKS_DAYS_COUNT = 14;
-    private final static int ZERO = 0;
     private final static int ONE_DAY = 1;
-    private final static DateTimeFormatter DAY_AND_MONTH_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM");
     private final static String OTHER_TYPE_DISEASE_NAME = "Другое";
 
     private final DiseaseInfoResponseMapper diseaseInfoResponseMapper;
     private final DiseaseService diseaseService;
     private final MailSender mailSender;
-    private final InstituteDirectionRepository instituteDirectionRepository;
     private final UserRepository userRepository;
+    private final GroupService groupService;
+    private final DepartmentService departmentService;
+    private final GraphicsService graphicsService;
 
     @Override
     public List<DiseaseInfoResponse> getProcessedDiseasesByInsitute(JwtUser jwtUser) {
@@ -160,6 +147,22 @@ public class DecanatServiceImpl implements DecanatService {
         return decanatAdditionalInfo;
     }
 
+    @Override
+    public UniversityInfo buildUniversityInfo(UserInfoDto userInfoDto) {
+
+        UniversityInfo universityInfo = new UniversityInfo();
+        User decanatUser = getUserByLogin(userInfoDto.getLogin());
+        String instituteId = getDecanatInstituteId(decanatUser);
+
+        List<GroupResponse> groups = groupService.getAllGroupsByInstituteId(instituteId);
+        List<DepartmentResponse> departments = departmentService.getAllDepartmentsByInstituteId(instituteId);
+
+        universityInfo.setDepartments(departments);
+        universityInfo.setGroups(groups);
+
+        return universityInfo;
+    }
+
     private List<DiseaseTypeCountOfSick> getDiseaseTypeCountOfSick(UserInfoDto userInfoDto) {
         String instituteId = getDecanatUserInstituteId(userInfoDto);
 
@@ -213,8 +216,7 @@ public class DecanatServiceImpl implements DecanatService {
     private List<DepartmentCountOfSick> getDepartmentCountOfSicks(UserInfoDto userInfoDto) {
         String instituteId = getDecanatUserInstituteId(userInfoDto);
 
-        List<InstituteDirection> instituteDirections = instituteDirectionRepository.findAllByInstituteId(instituteId);
-        List<Department> departments = getDepartments(instituteDirections);
+        List<DepartmentResponse> departments = departmentService.getAllDepartmentsByInstituteId(instituteId);
 
         return Optional.ofNullable(departments)
                 .orElse(Collections.emptyList())
@@ -224,7 +226,7 @@ public class DecanatServiceImpl implements DecanatService {
     }
 
 
-    private DepartmentCountOfSick buildDepartmentCountOfSick(Department department) {
+    private DepartmentCountOfSick buildDepartmentCountOfSick(DepartmentResponse department) {
         List<DiseaseInformation> diseaseInformationList = diseaseService.getDiseasesInStatusByDepartment(DiseaseStatus.ACTIVE, department.getId());
 
         DepartmentCountOfSick departmentCountOfSick = new DepartmentCountOfSick();
@@ -232,14 +234,6 @@ public class DecanatServiceImpl implements DecanatService {
         departmentCountOfSick.setCountOfSick(diseaseInformationList.size());
 
         return departmentCountOfSick;
-    }
-
-    private List<Department> getDepartments(List<InstituteDirection> instituteDirections) {
-        return Optional.ofNullable(instituteDirections)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(InstituteDirection::getDepartment)
-                .collect(Collectors.toList());
     }
 
     private String getCountOfSickNowInInstitute(UserInfoDto userInfoDto) {
@@ -274,20 +268,13 @@ public class DecanatServiceImpl implements DecanatService {
 
     private CountOfDiseasesByDays getCountOfDiseasesByDaysForTwoWeeks(UserInfoDto userInfoDto) {
         LocalDate startDate = LocalDate.now().minusDays(TWO_WEEKS_DAYS_COUNT - ONE_DAY);
+        LocalDate endDate = LocalDate.now();
 
         String instituteId = getDecanatUserInstituteId(userInfoDto);
 
         List<DiseaseInformation> notRejectedDiseases = diseaseService.getNotRejectedDiseasesByInstitute(instituteId);
 
-        List<Long> countOfDiseasesByTwoWeeks = getCountOfDiseasesByTwoWeeks(notRejectedDiseases, startDate);
-        List<String> datesInTwoLatestWeek = getDatesInTwoLatestWeek(startDate);
-
-
-        CountOfDiseasesByDays countOfDiseasesByDays = new CountOfDiseasesByDays();
-        countOfDiseasesByDays.setCountsOfSick(countOfDiseasesByTwoWeeks);
-        countOfDiseasesByDays.setDates(datesInTwoLatestWeek);
-
-        return countOfDiseasesByDays;
+        return graphicsService.getCountOfDiseasesByDays(notRejectedDiseases, startDate, endDate);
     }
 
     private String getDecanatUserInstituteId(UserInfoDto userInfoDto) {
@@ -296,50 +283,6 @@ public class DecanatServiceImpl implements DecanatService {
                 .map(InstituteResponse::getId)
                 .orElse(StringUtils.EMPTY);
     }
-
-    private List<String> getDatesInTwoLatestWeek(LocalDate startDate) {
-        List<String> dates = new ArrayList<>();
-
-        IntStream.range(ZERO, TWO_WEEKS_DAYS_COUNT)
-                .forEach(dayCount -> {
-                    LocalDate date = startDate.plusDays(dayCount);
-                    dates.add(DAY_AND_MONTH_DATE_FORMAT.format(date));
-                });
-
-        return dates;
-    }
-
-    private List<Long> getCountOfDiseasesByTwoWeeks(List<DiseaseInformation> diseaseInformationByTwoWeeks, LocalDate startDate) {
-        List<Long> countOfDiseasesByTwoWeeks = new ArrayList<>();
-
-        IntStream.range(ZERO, TWO_WEEKS_DAYS_COUNT)
-                .forEach(dayCount -> {
-                    LocalDate date = startDate.plusDays(dayCount);
-                    Long countOfSick = calculateCountOfSickInDay(date, diseaseInformationByTwoWeeks);
-                    countOfDiseasesByTwoWeeks.add(countOfSick);
-                });
-
-        return countOfDiseasesByTwoWeeks;
-    }
-
-    private Long calculateCountOfSickInDay(LocalDate date, List<DiseaseInformation> diseaseInformationByTwoWeeks) {
-
-        return Optional.ofNullable(diseaseInformationByTwoWeeks)
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(diseaseInformation -> {
-                    LocalDate dateDisease = diseaseInformation.getDateOfDisease();
-                    LocalDate dateRecovery = diseaseInformation.getDateOfRecovery();
-                    return (date.isEqual(dateDisease) || date.isAfter(dateDisease)) && (dateRecovery == null || date.isEqual(dateRecovery) || date.isBefore(dateRecovery));
-                })
-                .count();
-    }
-
-
-
-
-
-
 
     private void sendNotificationAboutDiseaseApprove(DiseaseInformation diseaseInformation) {
         String userId = getUserId(diseaseInformation);

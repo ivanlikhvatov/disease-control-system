@@ -1,6 +1,7 @@
 package ru.example.dto.response.decanatAdditionalInfo;
 
 import lombok.Data;
+import ru.example.dto.response.graphics.CountOfDiseasesByDays;
 
 import java.util.List;
 
