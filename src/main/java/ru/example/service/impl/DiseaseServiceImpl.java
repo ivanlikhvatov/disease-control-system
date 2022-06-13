@@ -68,9 +68,14 @@ public class DiseaseServiceImpl implements DiseaseService {
     private String uploadPath;
 
     @Override
-    public List<DiseaseResponse> getDiseases() {
+    public List<DiseaseResponse> getDiseasesResponse() {
         List<Disease> diseases = diseaseRepository.findAll();
         return diseaseResponseMapper.map(diseases);
+    }
+
+    @Override
+    public List<Disease> getDiseases() {
+        return diseaseRepository.findAll();
     }
 
     @Override
@@ -218,6 +223,18 @@ public class DiseaseServiceImpl implements DiseaseService {
         return getDiseaseFromNeedInstitute(diseaseInformationList, instituteId);
     }
 
+    @Override
+    public List<DiseaseInfoResponse> getAllDiseaseInformationByInstitute(JwtUser jwtUser) {
+
+        User decanatUser = userService.getUserByLogin(jwtUser.getLogin());
+        String decanatInstituteId = getDecanatInstituteId(decanatUser);
+
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAll();
+        List<DiseaseInformation> diseasesInformationFromInstitute = getDiseaseFromNeedInstitute(diseaseInformationList, decanatInstituteId);
+
+        return buildDiseasesResponseWithScannedCertificate(diseasesInformationFromInstitute);
+    }
+
     private void sendNotificationAboutDiseaseReject(DiseaseInformation diseaseInformation, String rejectCause) {
         String userId = getUserId(diseaseInformation);
         User user = userService.getById(userId);
@@ -315,6 +332,11 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     private DiseaseInfoResponse addBase64ScannedCertificate(DiseaseInfoResponse diseaseInfo) {
+
+        if (StringUtils.isBlank(diseaseInfo.getScannedCertificateFileName())) {
+            return diseaseInfo;
+        }
+
         String fileName = diseaseInfo.getScannedCertificateFileName();
         String path = uploadPath.concat(fileName);
 

@@ -27,6 +27,11 @@ public class DecanatController {
         return diseaseService.getActiveDiseases(jwtUser);
     }
 
+    @GetMapping("/diseases/all")
+    public List<DiseaseInfoResponse> getAllDiseases(@AuthenticationPrincipal JwtUser jwtUser) {
+        return diseaseService.getAllDiseaseInformationByInstitute(jwtUser);
+    }
+
     @PostMapping("/diseases/{diseaseId}/approve")
     public StatusResult approveDiseaseByDecanat(@PathVariable String diseaseId, @AuthenticationPrincipal JwtUser jwtUser) {
         return diseaseService.approveDiseaseByDecanat(diseaseId, jwtUser);

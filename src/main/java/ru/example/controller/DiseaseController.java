@@ -24,7 +24,7 @@ public class DiseaseController {
 
     @GetMapping//TODO поправить path: student тут лишнее
     public List<DiseaseResponse> getDiseases() {
-        return diseaseService.getDiseases();
+        return diseaseService.getDiseasesResponse();
     }
 
     @GetMapping("/info")

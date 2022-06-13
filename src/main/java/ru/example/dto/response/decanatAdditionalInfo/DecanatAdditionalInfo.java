@@ -19,4 +19,7 @@ public class DecanatAdditionalInfo {
     private String directionWithHighestNumberOfDiseases;
 
     private List<DepartmentCountOfSick> departmentCountOfSicks;
+
+    private List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks;
+
 }

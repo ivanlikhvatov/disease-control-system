@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.example.dao.entity.department.Department;
+import ru.example.dao.entity.disease.Disease;
 import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dao.entity.disease.DiseaseStatus;
 import ru.example.dao.entity.instituteDirection.InstituteDirection;
@@ -19,6 +20,7 @@ import ru.example.dto.response.UserInfoDto;
 import ru.example.dto.response.decanatAdditionalInfo.CountOfDiseasesByDays;
 import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfo;
 import ru.example.dto.response.decanatAdditionalInfo.DepartmentCountOfSick;
+import ru.example.dto.response.decanatAdditionalInfo.DiseaseTypeCountOfSick;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
 import ru.example.mapper.UserInfoResponseDtoMapper;
@@ -44,6 +46,7 @@ public class UserServiceImpl implements UserService {
     private final static int ZERO = 0;
     private final static int ONE_DAY = 1;
     private final static DateTimeFormatter DAY_AND_MONTH_DATE_FORMAT = DateTimeFormatter.ofPattern("dd.MM");
+    private final static String OTHER_TYPE_DISEASE_NAME = "Другое";
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -101,14 +104,66 @@ public class UserServiceImpl implements UserService {
         String countOfRecoverToday = getCountOfRecoverTodayInInstitute(userInfoDto);
         String countOfSickToday = getCountOfSickTodayInInstitute(userInfoDto);
         List<DepartmentCountOfSick> departmentCountOfSicks = getDepartmentCountOfSicks(userInfoDto);
+        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = getDiseaseTypeCountOfSick(userInfoDto);
 
         decanatAdditionalInfo.setCountOfDiseasesByDaysForTwoWeeks(countOfDiseasesByDays);
         decanatAdditionalInfo.setCountOfSickNow(countOfSickNow);
         decanatAdditionalInfo.setDepartmentCountOfSicks(departmentCountOfSicks);
         decanatAdditionalInfo.setCountOfRecoverToday(countOfRecoverToday);
         decanatAdditionalInfo.setCountOfSickToday(countOfSickToday);
+        decanatAdditionalInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
 
         return decanatAdditionalInfo;
+    }
+
+    private List<DiseaseTypeCountOfSick> getDiseaseTypeCountOfSick(UserInfoDto userInfoDto) {
+        String instituteId = getDecanatUserInstituteId(userInfoDto);
+
+        List<DiseaseInformation> diseaseInformationList = diseaseService.getDiseasesInStatusByInstitute(DiseaseStatus.ACTIVE, instituteId);
+        List<Disease> diseases = diseaseService.getDiseases();
+
+        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = Optional.ofNullable(diseases)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(disease -> buildDiseaseTypeCountOfSick(disease, diseaseInformationList))
+                .collect(Collectors.toList());
+
+        DiseaseTypeCountOfSick otherDiseaseTypeCountOfSick = buildOtherDiseaseTypeCountOfSick(diseaseInformationList);
+        diseaseTypeCountOfSicks.add(otherDiseaseTypeCountOfSick);
+
+        return diseaseTypeCountOfSicks;
+    }
+
+    private DiseaseTypeCountOfSick buildOtherDiseaseTypeCountOfSick(List<DiseaseInformation> diseaseInformationList) {
+        DiseaseTypeCountOfSick diseaseTypeCountOfSick = new DiseaseTypeCountOfSick();
+
+        long countOfSick = Optional.ofNullable(diseaseInformationList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(diseaseInformation -> StringUtils.isNotBlank(diseaseInformation.getOtherDiseaseInformation()))
+                .count();
+
+        diseaseTypeCountOfSick.setCountOfSick(countOfSick);
+        diseaseTypeCountOfSick.setDiseaseName(OTHER_TYPE_DISEASE_NAME);
+
+        return diseaseTypeCountOfSick;
+    }
+
+    private DiseaseTypeCountOfSick buildDiseaseTypeCountOfSick(Disease disease, List<DiseaseInformation> diseaseInformationList) {
+        String diseaseId = disease.getId();
+        DiseaseTypeCountOfSick diseaseTypeCountOfSick = new DiseaseTypeCountOfSick();
+
+        long countOfSick = Optional.ofNullable(diseaseInformationList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .filter(diseaseInformation -> diseaseInformation.getDisease() != null
+                        && diseaseId.equals(diseaseInformation.getDisease().getId()))
+                .count();
+
+        diseaseTypeCountOfSick.setCountOfSick(countOfSick);
+        diseaseTypeCountOfSick.setDiseaseName(disease.getName());
+
+        return diseaseTypeCountOfSick;
     }
 
     private List<DepartmentCountOfSick> getDepartmentCountOfSicks(UserInfoDto userInfoDto) {

@@ -1,5 +1,6 @@
 package ru.example.service;
 
+import ru.example.dao.entity.disease.Disease;
 import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dao.entity.disease.DiseaseStatus;
 import ru.example.dto.request.disease.ApproveDiseaseRequest;
@@ -15,7 +16,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface DiseaseService {
-    List<DiseaseResponse> getDiseases();
+    List<DiseaseResponse> getDiseasesResponse();
+
+    List<Disease> getDiseases();
 
     StatusResult addDiseaseInfo(AddDiseaseInformationRequest request, JwtUser jwtUser);
 
@@ -46,4 +49,6 @@ public interface DiseaseService {
     List<DiseaseInformation> getRecoverTodayDiseasesByInstitute(String instituteId);
 
     List<DiseaseInformation> getSickTodayDiseasesByInstitute(String instituteId);
+
+    List<DiseaseInfoResponse> getAllDiseaseInformationByInstitute(JwtUser jwtUser);
 }

@@ -32,4 +32,8 @@ public class DiseaseInfoResponse {
     private String electronicSickId;
 
     private String rejectCause;
+
+    private UserInfoDto rejectAuthor;
+
+    private UserInfoDto approveAuthor;
 }
