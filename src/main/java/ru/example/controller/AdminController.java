@@ -1,4 +1,4 @@
-package ru.example.controller.admin;
+package ru.example.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

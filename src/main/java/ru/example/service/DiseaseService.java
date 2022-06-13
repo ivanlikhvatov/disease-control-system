@@ -3,16 +3,9 @@ package ru.example.service;
 import ru.example.dao.entity.disease.Disease;
 import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dao.entity.disease.DiseaseStatus;
-import ru.example.dto.request.disease.ApproveDiseaseRequest;
-import ru.example.dto.request.disease.AddDiseaseInformationRequest;
-import ru.example.dto.request.disease.EditDiseaseInformationRequest;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.DiseaseResponse;
-import ru.example.dto.response.StatusResult;
-import ru.example.dto.response.UserInfoDto;
-import ru.example.security.jwt.JwtUser;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface DiseaseService {
@@ -20,29 +13,11 @@ public interface DiseaseService {
 
     List<Disease> getDiseases();
 
-    StatusResult addDiseaseInfo(AddDiseaseInformationRequest request, JwtUser jwtUser);
-
-    DiseaseInfoResponse getActiveDisease(JwtUser jwtUser);
-
-    StatusResult editDiseaseInfo(EditDiseaseInformationRequest request, JwtUser jwtUser);
-
-    StatusResult approveDiseaseBySick(ApproveDiseaseRequest request, JwtUser jwtUser);
-
-    List<DiseaseInfoResponse> getProcessedDiseases(JwtUser jwtUser);
-
-    StatusResult approveDiseaseByDecanat(String diseaseId, JwtUser jwtUser);
-
-    StatusResult refundDiseaseToStudent(String diseaseId, String refundCause);
-
-    StatusResult rejectDisease(String diseaseId, String rejectCause, JwtUser jwtUser);
-
     List<DiseaseInformation> getNotRejectedDiseasesByInstitute(String instituteId);
 
     List<DiseaseInformation> getDiseasesInStatusByInstitute(DiseaseStatus active, String instituteId);
 
-    List<DiseaseInformation> getDiseasesInStatus(DiseaseStatus active);
-
-    List<DiseaseInfoResponse> getActiveDiseases(JwtUser jwtUser);
+    List<DiseaseInformation> getDiseasesInStatus(DiseaseStatus status);
 
     List<DiseaseInformation> getDiseasesInStatusByDepartment(DiseaseStatus status, String departmentId);
 
@@ -50,5 +25,19 @@ public interface DiseaseService {
 
     List<DiseaseInformation> getSickTodayDiseasesByInstitute(String instituteId);
 
-    List<DiseaseInfoResponse> getAllDiseaseInformationByInstitute(JwtUser jwtUser);
+    DiseaseInformation getDiseaseBySickIdAndStatus(String sickId, DiseaseStatus status);
+
+    String getUserIdFromDisease(DiseaseInformation diseaseInformation);
+
+    List<DiseaseInformation> getDiseaseFromNeedInstitute(List<DiseaseInformation> processedDiseases, String decanatInstituteId);
+
+    List<DiseaseInfoResponse> buildDiseasesResponseWithScannedCertificate(List<DiseaseInformation> processedDiseases);
+
+    List<DiseaseInformation> getAllDiseasesInformation();
+
+    DiseaseInformation getDiseaseInformationById(String id);
+
+    void saveDisease(DiseaseInformation diseaseInformation);
+
+    void deleteScansFromUploads(String scannedCertificateFileName);
 }

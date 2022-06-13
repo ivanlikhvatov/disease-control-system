@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.StatusResult;
 import ru.example.security.jwt.JwtUser;
-import ru.example.service.DiseaseService;
+import ru.example.service.DecanatService;
 
 import java.util.List;
 
@@ -15,35 +15,35 @@ import java.util.List;
 @RequestMapping("/api/v1/decanat")
 public class DecanatController {
 
-    private final DiseaseService diseaseService;
+    private final DecanatService decanatService;
 
     @GetMapping("/diseases/processed")
     public List<DiseaseInfoResponse> getProcessedDiseases(@AuthenticationPrincipal JwtUser jwtUser) {
-        return diseaseService.getProcessedDiseases(jwtUser);
+        return decanatService.getProcessedDiseasesByInsitute(jwtUser);
     }
 
     @GetMapping("/diseases/active")
     public List<DiseaseInfoResponse> getActiveDiseases(@AuthenticationPrincipal JwtUser jwtUser) {
-        return diseaseService.getActiveDiseases(jwtUser);
+        return decanatService.getActiveDiseasesByInstitute(jwtUser);
     }
 
     @GetMapping("/diseases/all")
     public List<DiseaseInfoResponse> getAllDiseases(@AuthenticationPrincipal JwtUser jwtUser) {
-        return diseaseService.getAllDiseaseInformationByInstitute(jwtUser);
+        return decanatService.getAllDiseaseInformationByInstitute(jwtUser);
     }
 
     @PostMapping("/diseases/{diseaseId}/approve")
     public StatusResult approveDiseaseByDecanat(@PathVariable String diseaseId, @AuthenticationPrincipal JwtUser jwtUser) {
-        return diseaseService.approveDiseaseByDecanat(diseaseId, jwtUser);
+        return decanatService.approveDiseaseByDecanat(diseaseId, jwtUser);
     }
 
     @PostMapping("/diseases/{diseaseId}/refund")
     public StatusResult refundDiseaseToStudent(@PathVariable String diseaseId, @RequestParam String refundCause) {
-        return diseaseService.refundDiseaseToStudent(diseaseId, refundCause);
+        return decanatService.refundDiseaseToStudent(diseaseId, refundCause);
     }
 
     @PostMapping("/diseases/{diseaseId}/reject")
     public StatusResult rejectDisease(@PathVariable String diseaseId, @RequestParam String rejectCause, @AuthenticationPrincipal JwtUser jwtUser) {
-        return diseaseService.rejectDisease(diseaseId, rejectCause, jwtUser);
+        return decanatService.rejectDisease(diseaseId, rejectCause, jwtUser);
     }
 }

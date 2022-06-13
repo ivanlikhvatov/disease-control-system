@@ -24,8 +24,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserService userService;
     private final LoginResponseDtoMapper mapper;
 
-
-    //TODO почему здесь возвращаю LoginResponseDto а не AuthenticationRequestDto (потому что userInfo возвращается в сервисах по запросу не личной информации(не содержит токен))
     @Override
     public LoginResponseDto loginUser(AuthenticationRequestDto request) {
         String login = request.getLogin();
