@@ -150,6 +150,12 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
+    public List<DiseaseInformation> getDiseasesInStatusByGroup(DiseaseStatus active, String groupId) {
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByStatus(active);
+        return getDiseaseFromNeedGroup(diseaseInformationList, groupId);
+    }
+
+    @Override
     public List<DiseaseInformation> getDiseasesInStatusByDepartment(DiseaseStatus status, String departmentId) {
         List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByStatus(status);
         return getDiseaseFromNeedDepartment(diseaseInformationList, departmentId);

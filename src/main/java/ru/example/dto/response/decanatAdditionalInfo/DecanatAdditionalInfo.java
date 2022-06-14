@@ -2,6 +2,8 @@ package ru.example.dto.response.decanatAdditionalInfo;
 
 import lombok.Data;
 import ru.example.dto.response.graphics.CountOfDiseasesByDays;
+import ru.example.dto.response.graphics.UniversityPartCountOfSick;
+import ru.example.dto.response.graphics.DiseaseTypeCountOfSick;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class DecanatAdditionalInfo {
 
     private String directionWithHighestNumberOfDiseases;
 
-    private List<DepartmentCountOfSick> departmentCountOfSicks;
+    private List<UniversityPartCountOfSick> departmentCountOfSicks;
 
     private List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks;
 

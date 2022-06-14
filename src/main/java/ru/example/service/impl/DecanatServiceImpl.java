@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import ru.example.dao.entity.disease.Disease;
 import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dao.entity.disease.DiseaseStatus;
 import ru.example.dao.entity.institute.Institute;
@@ -12,8 +11,8 @@ import ru.example.dao.entity.user.User;
 import ru.example.dto.response.*;
 import ru.example.dto.response.graphics.CountOfDiseasesByDays;
 import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfo;
-import ru.example.dto.response.decanatAdditionalInfo.DepartmentCountOfSick;
-import ru.example.dto.response.decanatAdditionalInfo.DiseaseTypeCountOfSick;
+import ru.example.dto.response.graphics.UniversityPartCountOfSick;
+import ru.example.dto.response.graphics.DiseaseTypeCountOfSick;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
 import ru.example.mapper.DiseaseInfoResponseMapper;
@@ -32,7 +31,6 @@ public class DecanatServiceImpl implements DecanatService {
 
     private final static int TWO_WEEKS_DAYS_COUNT = 14;
     private final static int ONE_DAY = 1;
-    private final static String OTHER_TYPE_DISEASE_NAME = "Другое";
 
     private final DiseaseInfoResponseMapper diseaseInfoResponseMapper;
     private final DiseaseService diseaseService;
@@ -134,8 +132,8 @@ public class DecanatServiceImpl implements DecanatService {
         String countOfSickNow = getCountOfSickNowInInstitute(userInfoDto);
         String countOfRecoverToday = getCountOfRecoverTodayInInstitute(userInfoDto);
         String countOfSickToday = getCountOfSickTodayInInstitute(userInfoDto);
-        List<DepartmentCountOfSick> departmentCountOfSicks = getDepartmentCountOfSicks(userInfoDto);
-        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = getDiseaseTypeCountOfSick(userInfoDto);
+        List<UniversityPartCountOfSick> departmentCountOfSicks = getDepartmentsCountOfSicks(userInfoDto);
+        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = getDiseasesByTypeCountOfSickInInstitute(userInfoDto);
 
         decanatAdditionalInfo.setCountOfDiseasesByDaysForTwoWeeks(countOfDiseasesByDays);
         decanatAdditionalInfo.setCountOfSickNow(countOfSickNow);
@@ -163,57 +161,14 @@ public class DecanatServiceImpl implements DecanatService {
         return universityInfo;
     }
 
-    private List<DiseaseTypeCountOfSick> getDiseaseTypeCountOfSick(UserInfoDto userInfoDto) {
+    private List<DiseaseTypeCountOfSick> getDiseasesByTypeCountOfSickInInstitute(UserInfoDto userInfoDto) {
         String instituteId = getDecanatUserInstituteId(userInfoDto);
-
         List<DiseaseInformation> diseaseInformationList = diseaseService.getDiseasesInStatusByInstitute(DiseaseStatus.ACTIVE, instituteId);
-        List<Disease> diseases = diseaseService.getDiseases();
 
-        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = Optional.ofNullable(diseases)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(disease -> buildDiseaseTypeCountOfSick(disease, diseaseInformationList))
-                .collect(Collectors.toList());
-
-        DiseaseTypeCountOfSick otherDiseaseTypeCountOfSick = buildOtherDiseaseTypeCountOfSick(diseaseInformationList);
-        diseaseTypeCountOfSicks.add(otherDiseaseTypeCountOfSick);
-
-        return diseaseTypeCountOfSicks;
+        return graphicsService.buildCountOfDiseasesByType(diseaseInformationList);
     }
 
-    private DiseaseTypeCountOfSick buildOtherDiseaseTypeCountOfSick(List<DiseaseInformation> diseaseInformationList) {
-        DiseaseTypeCountOfSick diseaseTypeCountOfSick = new DiseaseTypeCountOfSick();
-
-        long countOfSick = Optional.ofNullable(diseaseInformationList)
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(diseaseInformation -> StringUtils.isNotBlank(diseaseInformation.getOtherDiseaseInformation()))
-                .count();
-
-        diseaseTypeCountOfSick.setCountOfSick(countOfSick);
-        diseaseTypeCountOfSick.setDiseaseName(OTHER_TYPE_DISEASE_NAME);
-
-        return diseaseTypeCountOfSick;
-    }
-
-    private DiseaseTypeCountOfSick buildDiseaseTypeCountOfSick(Disease disease, List<DiseaseInformation> diseaseInformationList) {
-        String diseaseId = disease.getId();
-        DiseaseTypeCountOfSick diseaseTypeCountOfSick = new DiseaseTypeCountOfSick();
-
-        long countOfSick = Optional.ofNullable(diseaseInformationList)
-                .orElse(Collections.emptyList())
-                .stream()
-                .filter(diseaseInformation -> diseaseInformation.getDisease() != null
-                        && diseaseId.equals(diseaseInformation.getDisease().getId()))
-                .count();
-
-        diseaseTypeCountOfSick.setCountOfSick(countOfSick);
-        diseaseTypeCountOfSick.setDiseaseName(disease.getName());
-
-        return diseaseTypeCountOfSick;
-    }
-
-    private List<DepartmentCountOfSick> getDepartmentCountOfSicks(UserInfoDto userInfoDto) {
+    private List<UniversityPartCountOfSick> getDepartmentsCountOfSicks(UserInfoDto userInfoDto) {
         String instituteId = getDecanatUserInstituteId(userInfoDto);
 
         List<DepartmentResponse> departments = departmentService.getAllDepartmentsByInstituteId(instituteId);
@@ -226,11 +181,11 @@ public class DecanatServiceImpl implements DecanatService {
     }
 
 
-    private DepartmentCountOfSick buildDepartmentCountOfSick(DepartmentResponse department) {
+    private UniversityPartCountOfSick buildDepartmentCountOfSick(DepartmentResponse department) {
         List<DiseaseInformation> diseaseInformationList = diseaseService.getDiseasesInStatusByDepartment(DiseaseStatus.ACTIVE, department.getId());
 
-        DepartmentCountOfSick departmentCountOfSick = new DepartmentCountOfSick();
-        departmentCountOfSick.setDepartmentName(department.getShortName());
+        UniversityPartCountOfSick departmentCountOfSick = new UniversityPartCountOfSick();
+        departmentCountOfSick.setName(department.getShortName());
         departmentCountOfSick.setCountOfSick(diseaseInformationList.size());
 
         return departmentCountOfSick;

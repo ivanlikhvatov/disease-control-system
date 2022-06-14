@@ -17,6 +17,8 @@ public interface DiseaseService {
 
     List<DiseaseInformation> getDiseasesInStatusByInstitute(DiseaseStatus active, String instituteId);
 
+    List<DiseaseInformation> getDiseasesInStatusByGroup(DiseaseStatus active, String groupId);
+
     List<DiseaseInformation> getDiseasesInStatus(DiseaseStatus status);
 
     List<DiseaseInformation> getDiseasesInStatusByDepartment(DiseaseStatus status, String departmentId);

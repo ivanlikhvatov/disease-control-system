@@ -1,4 +1,4 @@
-package ru.example.dto.response.decanatAdditionalInfo;
+package ru.example.dto.response.graphics;
 
 import lombok.Data;
 
