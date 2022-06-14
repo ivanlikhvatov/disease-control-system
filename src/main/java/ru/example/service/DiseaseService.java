@@ -15,6 +15,10 @@ public interface DiseaseService {
 
     List<DiseaseInformation> getNotRejectedDiseasesByInstitute(String instituteId);
 
+    List<DiseaseInformation> getNotRejectedDiseasesByDepartment(String departmentId);
+
+    List<DiseaseInformation> getNotRejectedDiseasesByGroup(String groupId);
+
     List<DiseaseInformation> getDiseasesInStatusByInstitute(DiseaseStatus active, String instituteId);
 
     List<DiseaseInformation> getDiseasesInStatusByGroup(DiseaseStatus active, String groupId);
@@ -46,6 +50,4 @@ public interface DiseaseService {
     void saveDisease(DiseaseInformation diseaseInformation);
 
     void deleteScansFromUploads(String scannedCertificateFileName);
-
-    List<DiseaseInformation> getNotRejectedDiseasesByGroup(String groupId);
 }

@@ -139,6 +139,12 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
+    public List<DiseaseInformation> getNotRejectedDiseasesByDepartment(String departmentId) {
+        List<DiseaseInformation> notRejectedDiseasesInfo = diseaseInformationRepository.findAllByStatusIsNot(DiseaseStatus.REJECTED);
+        return getDiseaseFromNeedDepartment(notRejectedDiseasesInfo, departmentId);
+    }
+
+    @Override
     public List<DiseaseInformation> getDiseasesInStatus(DiseaseStatus status) {
         return diseaseInformationRepository.findAllByStatus(status);
     }

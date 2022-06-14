@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class GroupGraphicInfo {
+public class DepartmentGraphicInfo {
     private CountOfDiseasesByDays countOfDiseasesByDays;
 
     private List<UniversityPartCountOfSick> universityPartCountOfSicks;

@@ -132,12 +132,12 @@ public class DecanatServiceImpl implements DecanatService {
         String countOfSickNow = getCountOfSickNowInInstitute(userInfoDto);
         String countOfRecoverToday = getCountOfRecoverTodayInInstitute(userInfoDto);
         String countOfSickToday = getCountOfSickTodayInInstitute(userInfoDto);
-        List<UniversityPartCountOfSick> departmentCountOfSicks = getDepartmentsCountOfSicks(userInfoDto);
+        List<UniversityPartCountOfSick> departmentCountOfSicks = graphicsService.buildDepartmentCountOfSicksForDecanat(userInfoDto);
         List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = getDiseasesByTypeCountOfSickInInstitute(userInfoDto);
 
         decanatAdditionalInfo.setCountOfDiseasesByDaysForTwoWeeks(countOfDiseasesByDays);
         decanatAdditionalInfo.setCountOfSickNow(countOfSickNow);
-        decanatAdditionalInfo.setDepartmentCountOfSicks(departmentCountOfSicks);
+        decanatAdditionalInfo.setUniversityPartCountOfSicks(departmentCountOfSicks);
         decanatAdditionalInfo.setCountOfRecoverToday(countOfRecoverToday);
         decanatAdditionalInfo.setCountOfSickToday(countOfSickToday);
         decanatAdditionalInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
