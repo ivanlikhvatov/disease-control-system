@@ -5,13 +5,16 @@ import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dao.entity.disease.DiseaseStatus;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.DiseaseResponse;
+import ru.example.dto.response.UserInfoDto;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DiseaseService {
-    List<DiseaseResponse> getDiseasesResponse();
 
     List<Disease> getDiseases();
+
+    List<DiseaseResponse> getDiseasesResponse();
 
     List<DiseaseInformation> getAllNotRejectedDiseases();
 
@@ -23,9 +26,9 @@ public interface DiseaseService {
 
     List<DiseaseInformation> getDiseasesInStatusByInstitute(DiseaseStatus active, String instituteId);
 
-    List<DiseaseInformation> getDiseasesInStatusByGroup(DiseaseStatus active, String groupId);
-
     List<DiseaseInformation> getAllDiseasesInStatus(DiseaseStatus status);
+
+    List<DiseaseInformation> getDiseasesInStatusByGroup(DiseaseStatus active, String groupId);
 
     List<DiseaseInformation> getDiseasesInStatusByDepartment(DiseaseStatus status, String departmentId);
 
@@ -56,4 +59,10 @@ public interface DiseaseService {
     List<DiseaseInformation> getAllRecoverTodayDiseases();
 
     List<DiseaseInformation> getAllSickTodayDiseases();
+
+    List<DiseaseInformation> getAllDiseasesByGroup(String groupId);
+
+    List<DiseaseInformation> getRecoverTodayByGroup(String groupId);
+
+    List<DiseaseInformation> getSickTodayDiseasesByGroup(String groupId);
 }

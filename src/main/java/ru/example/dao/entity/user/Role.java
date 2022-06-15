@@ -17,7 +17,7 @@ public enum Role implements GrantedAuthority {
     CURATOR_SUPERVISING("Кафедрально ответственный"),
     RECTORAT("Ректорат"),
     DECANAT("Деканат"),
-    TEACHER("Учитель"),
+    TEACHER("Преподаватель"),
     ADMIN("Администратор");
 
     private final String description;

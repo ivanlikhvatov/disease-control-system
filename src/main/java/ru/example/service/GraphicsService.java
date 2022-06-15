@@ -29,4 +29,6 @@ public interface GraphicsService {
     UniversityGraphicInfo getUniversityGraphicInfo(UniversityGraphicRequest universityGraphicRequest, JwtUser jwtUser);
 
     List<UniversityPartCountOfSick> buildInstituteCountOfSicksForRectorat();
+
+    List<UniversityPartCountOfSick> buildGroupsCountOfSicksForCuratorAndTeacher(UserInfoDto userInfoDto);
 }

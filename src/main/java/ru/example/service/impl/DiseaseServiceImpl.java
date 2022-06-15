@@ -167,6 +167,12 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
+    public List<DiseaseInformation> getAllDiseasesByGroup(String groupId) {
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAll();
+        return getDiseaseFromNeedGroup(diseaseInformationList, groupId);
+    }
+
+    @Override
     public List<DiseaseInformation> getDiseasesInStatusByDepartment(DiseaseStatus status, String departmentId) {
         List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByStatus(status);
         return getDiseaseFromNeedDepartment(diseaseInformationList, departmentId);
@@ -179,6 +185,12 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
+    public List<DiseaseInformation> getRecoverTodayByGroup(String groupId) {
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByDateOfRecoveryEquals(LocalDate.now());
+        return getDiseaseFromNeedGroup(diseaseInformationList, groupId);
+    }
+
+    @Override
     public List<DiseaseInformation> getAllRecoverTodayDiseases() {
         return diseaseInformationRepository.findAllByDateOfRecoveryEquals(LocalDate.now());
     }
@@ -187,6 +199,12 @@ public class DiseaseServiceImpl implements DiseaseService {
     public List<DiseaseInformation> getSickTodayDiseasesByInstitute(String instituteId) {
         List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByDateOfDiseaseEquals(LocalDate.now());
         return getDiseaseFromNeedInstitute(diseaseInformationList, instituteId);
+    }
+
+    @Override
+    public List<DiseaseInformation> getSickTodayDiseasesByGroup(String groupId) {
+        List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByDateOfDiseaseEquals(LocalDate.now());
+        return getDiseaseFromNeedGroup(diseaseInformationList, groupId);
     }
 
     @Override

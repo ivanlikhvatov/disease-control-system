@@ -1,6 +1,8 @@
-package ru.example.dto.response;
+package ru.example.dto.response.additionalInfo;
 
 import lombok.Data;
+import ru.example.dto.response.UniversityInfo;
+import ru.example.dto.response.additionalInfo.CuratorAndTeacherAdditionalInfo;
 import ru.example.dto.response.additionalInfo.DecanatAdditionalInfo;
 import ru.example.dto.response.additionalInfo.RectoratAdditionalInfo;
 
@@ -12,4 +14,6 @@ public class UserAdditionalInfo {
     private DecanatAdditionalInfo decanatAdditionalInfo;
 
     private RectoratAdditionalInfo rectoratAdditionalInfo;
+
+    private CuratorAndTeacherAdditionalInfo curatorAndTeacherAdditionalInfo;
 }

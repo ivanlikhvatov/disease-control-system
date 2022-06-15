@@ -3,8 +3,10 @@ package ru.example.dto.response;
 import lombok.Data;
 import ru.example.dao.entity.user.Role;
 import ru.example.dao.entity.Status;
+import ru.example.dto.response.additionalInfo.UserAdditionalInfo;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -35,4 +37,6 @@ public class UserInfoDto {
     private InstituteResponse institute;
 
     private UserAdditionalInfo additionalInfo;
+
+    private List<String> interestedGroupsIdList;
 }

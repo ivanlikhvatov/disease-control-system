@@ -79,6 +79,10 @@ public class GraphicsServiceImpl implements GraphicsService {
             return buildRectoratGroupGraphicInfo(userInfoDto, groupGraphicRequest);
         }
 
+        if (user.getRoles().contains(Role.CURATOR) || user.getRoles().contains(Role.TEACHER)) {
+            return buildCuratorAndTeacherGroupGraphicInfo(userInfoDto, groupGraphicRequest);
+        }
+
         return new GroupGraphicInfo();
     }
 
@@ -227,6 +231,20 @@ public class GraphicsServiceImpl implements GraphicsService {
         return groupGraphicInfo;
     }
 
+    private GroupGraphicInfo buildCuratorAndTeacherGroupGraphicInfo(UserInfoDto userInfoDto, GroupGraphicRequest groupGraphicRequest) {
+        GroupGraphicInfo groupGraphicInfo = new GroupGraphicInfo();
+
+        CountOfDiseasesByDays countOfDiseasesByDays = buildCountOfDiseasesByDaysInGroup(groupGraphicRequest);
+        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = buildCountOfDiseasesByTypeInGroup(groupGraphicRequest);
+        List<UniversityPartCountOfSick> groupsCountOfSicks = buildGroupsCountOfSicksForCuratorAndTeacher(userInfoDto);
+
+        groupGraphicInfo.setCountOfDiseasesByDays(countOfDiseasesByDays);
+        groupGraphicInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
+        groupGraphicInfo.setUniversityPartCountOfSicks(groupsCountOfSicks);
+
+        return groupGraphicInfo;
+    }
+
     @Override
     public List<UniversityPartCountOfSick> buildDepartmentCountOfSicksForDecanat(UserInfoDto userInfoDto) {
         String instituteId = getDecanatInstituteId(userInfoDto);
@@ -257,6 +275,13 @@ public class GraphicsServiceImpl implements GraphicsService {
 
     private List<UniversityPartCountOfSick> buildGroupsCountOfSicksForRectorat() {
         List<GroupResponse> groups = groupService.getAllGroups();
+
+        return getGroupsCountOfSicks(groups);
+    }
+
+    @Override
+    public List<UniversityPartCountOfSick> buildGroupsCountOfSicksForCuratorAndTeacher(UserInfoDto userInfoDto) {
+        List<GroupResponse> groups = groupService.getAllGroupsByInterestedGroupsId(userInfoDto.getInterestedGroupsIdList());
 
         return getGroupsCountOfSicks(groups);
     }
@@ -392,9 +417,6 @@ public class GraphicsServiceImpl implements GraphicsService {
 
         return diseaseTypeCountOfSick;
     }
-
-
-
 
     private CountOfDiseasesByDays buildCountOfDiseasesByDaysInGroup(GroupGraphicRequest groupGraphicRequest) {
         String groupId = getGroupIdFromGroupGraphicRequest(groupGraphicRequest);

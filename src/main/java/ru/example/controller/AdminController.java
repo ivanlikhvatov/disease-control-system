@@ -50,4 +50,9 @@ public class AdminController {
         return groupService.getAllGroupsByProfileId(profileId);
     }
 
+    @GetMapping("/groups")
+    public List<GroupResponse> getAllGroups() {
+        return groupService.getAllGroups();
+    }
+
 }

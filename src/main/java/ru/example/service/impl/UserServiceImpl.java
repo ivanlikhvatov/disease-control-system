@@ -8,14 +8,16 @@ import org.springframework.stereotype.Service;
 import ru.example.dao.entity.user.Role;
 import ru.example.dao.entity.user.User;
 import ru.example.dto.response.UniversityInfo;
-import ru.example.dto.response.UserAdditionalInfo;
+import ru.example.dto.response.additionalInfo.UserAdditionalInfo;
 import ru.example.dto.response.UserInfoDto;
+import ru.example.dto.response.additionalInfo.CuratorAndTeacherAdditionalInfo;
 import ru.example.dto.response.additionalInfo.DecanatAdditionalInfo;
 import ru.example.dto.response.additionalInfo.RectoratAdditionalInfo;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
 import ru.example.mapper.UserInfoResponseDtoMapper;
 import ru.example.repository.UserRepository;
+import ru.example.service.CuratorAndTeacherService;
 import ru.example.service.DecanatService;
 import ru.example.service.RectoratService;
 import ru.example.service.UserService;
@@ -30,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
     private final DecanatService decanatService;
     private final RectoratService rectoratService;
+    private final CuratorAndTeacherService curatorAndTeacherService;
 
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
@@ -74,6 +77,16 @@ public class UserServiceImpl implements UserService {
 
             userAdditionalInfo.setUniversityInfo(universityInfo);
             userAdditionalInfo.setRectoratAdditionalInfo(rectoratAdditionalInfo);
+
+            return userAdditionalInfo;
+        }
+
+        if (userInfoDto.getRoles().contains(Role.CURATOR) || userInfoDto.getRoles().contains(Role.TEACHER)) {
+            CuratorAndTeacherAdditionalInfo curatorAndTeacherAdditionalInfo = curatorAndTeacherService.buildCuratorAndTeacherAdditionalInfo(userInfoDto);
+            UniversityInfo universityInfo = curatorAndTeacherService.buildUniversityInfo(userInfoDto);
+
+            userAdditionalInfo.setUniversityInfo(universityInfo);
+            userAdditionalInfo.setCuratorAndTeacherAdditionalInfo(curatorAndTeacherAdditionalInfo);
 
             return userAdditionalInfo;
         }

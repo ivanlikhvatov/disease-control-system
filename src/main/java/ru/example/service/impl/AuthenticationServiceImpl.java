@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.example.dao.entity.Status;
 import ru.example.dto.request.AuthenticationRequestDto;
 import ru.example.dto.response.LoginResponseDto;
-import ru.example.dto.response.UserAdditionalInfo;
+import ru.example.dto.response.additionalInfo.UserAdditionalInfo;
 import ru.example.dto.response.UserInfoDto;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;

@@ -14,6 +14,7 @@ import ru.example.dao.entity.institute.Institute;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -68,4 +69,9 @@ public class User {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "institute_id")
     private Institute institute;
+
+    @ElementCollection
+    @CollectionTable (name = "interestedGroupsIdList", joinColumns = @JoinColumn (name = "user_ud"))
+    @Column (name = "interested_group_id")
+    private List<String> interestedGroupsIdList;
 }

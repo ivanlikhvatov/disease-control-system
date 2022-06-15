@@ -37,6 +37,22 @@ public class GroupServiceImpl implements GroupService {
     }
 
     @Override
+    public List<GroupResponse> getAllGroupsByInterestedGroupsId(List<String> interestedGroupsIdList) {
+        return Optional.ofNullable(interestedGroupsIdList)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::getGroupById)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public GroupResponse getGroupById(String groupId) {
+        Group group = repository.getOne(groupId);
+
+        return mapper.map(group);
+    }
+
+    @Override
     public List<GroupResponse> getAllGroupsByInstituteId(String instituteId) {
         List<Group> groups = Optional.of(repository.findAll())
                 .orElse(Collections.emptyList())
