@@ -18,7 +18,7 @@ public class InstituteServiceImpl implements InstituteService {
     private final InstituteResponseMapper mapper;
 
     @Override
-    public List<InstituteResponse> getInstitutesInfo() {
+    public List<InstituteResponse> getAllInstitutes() {
         List<Institute> institutes = repository.findAll();
         return mapper.map(institutes);
     }

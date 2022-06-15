@@ -4,6 +4,7 @@ import ru.example.dao.entity.disease.DiseaseInformation;
 import ru.example.dto.request.graphics.DepartmentGraphicRequest;
 import ru.example.dto.request.graphics.GroupGraphicRequest;
 import ru.example.dto.request.graphics.InstituteGraphicRequest;
+import ru.example.dto.request.graphics.UniversityGraphicRequest;
 import ru.example.dto.response.UserInfoDto;
 import ru.example.dto.response.graphics.*;
 import ru.example.security.jwt.JwtUser;
@@ -24,4 +25,8 @@ public interface GraphicsService {
     List<UniversityPartCountOfSick> buildDepartmentCountOfSicksForDecanat(UserInfoDto userInfoDto);
 
     InstituteGraphicInfo getInstituteGraphicInfo(InstituteGraphicRequest instituteGraphicRequest, JwtUser jwtUser);
+
+    UniversityGraphicInfo getUniversityGraphicInfo(UniversityGraphicRequest universityGraphicRequest, JwtUser jwtUser);
+
+    List<UniversityPartCountOfSick> buildInstituteCountOfSicksForRectorat();
 }

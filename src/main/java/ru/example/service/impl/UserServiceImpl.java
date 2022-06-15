@@ -10,13 +10,14 @@ import ru.example.dao.entity.user.User;
 import ru.example.dto.response.UniversityInfo;
 import ru.example.dto.response.UserAdditionalInfo;
 import ru.example.dto.response.UserInfoDto;
-import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfo;
+import ru.example.dto.response.additionalInfo.DecanatAdditionalInfo;
+import ru.example.dto.response.additionalInfo.RectoratAdditionalInfo;
 import ru.example.error.ApiException;
 import ru.example.error.ErrorContainer;
 import ru.example.mapper.UserInfoResponseDtoMapper;
-import ru.example.repository.DepartmentRepository;
 import ru.example.repository.UserRepository;
 import ru.example.service.DecanatService;
+import ru.example.service.RectoratService;
 import ru.example.service.UserService;
 
 import java.util.*;
@@ -28,10 +29,11 @@ import java.util.*;
 public class UserServiceImpl implements UserService {
 
     private final DecanatService decanatService;
+    private final RectoratService rectoratService;
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final UserInfoResponseDtoMapper mapper;
-    private final DepartmentRepository departmentRepository;
 
     @Override
     public List<User> getAllUsers() {
@@ -59,8 +61,21 @@ public class UserServiceImpl implements UserService {
         if (userInfoDto.getRoles().contains(Role.DECANAT)) {
             DecanatAdditionalInfo decanatAdditionalInfo = decanatService.buildDecanatAdditionalInfo(userInfoDto);
             UniversityInfo universityInfo = decanatService.buildUniversityInfo(userInfoDto);
+
             userAdditionalInfo.setDecanatAdditionalInfo(decanatAdditionalInfo);
             userAdditionalInfo.setUniversityInfo(universityInfo);
+
+            return userAdditionalInfo;
+        }
+
+        if (userInfoDto.getRoles().contains(Role.RECTORAT)) {
+            RectoratAdditionalInfo rectoratAdditionalInfo = rectoratService.buildRectoratAdditionalInfo();
+            UniversityInfo universityInfo = rectoratService.buildUniversityInfo(userInfoDto);
+
+            userAdditionalInfo.setUniversityInfo(universityInfo);
+            userAdditionalInfo.setRectoratAdditionalInfo(rectoratAdditionalInfo);
+
+            return userAdditionalInfo;
         }
 
         return userAdditionalInfo;

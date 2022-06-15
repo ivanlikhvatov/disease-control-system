@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface GroupService {
 
-    List<GroupResponse> getAllGroups(String profileId);
+    List<GroupResponse> getAllGroupsByProfileId(String profileId);
 
     List<GroupResponse> getAllGroupsByInstituteId(String instituteId);
+
+    List<GroupResponse> getAllGroups();
 }

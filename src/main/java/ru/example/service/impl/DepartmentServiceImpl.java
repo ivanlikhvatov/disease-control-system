@@ -40,4 +40,12 @@ public class DepartmentServiceImpl implements DepartmentService {
 
         return departmentResponseMapper.map(departments);
     }
+
+    @Override
+    public List<DepartmentResponse> getAllDepartments() {
+
+        List<Department> departments = departmentRepository.findAll();
+
+        return departmentResponseMapper.map(departments);
+    }
 }

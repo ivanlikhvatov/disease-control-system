@@ -25,8 +25,14 @@ public class GroupServiceImpl implements GroupService {
     private final GroupResponseMapper mapper;
 
     @Override
-    public List<GroupResponse> getAllGroups(String profileId) {
+    public List<GroupResponse> getAllGroupsByProfileId(String profileId) {
         List<Group> groups = repository.findAllByDirectionProfileId(profileId);
+        return mapper.map(groups);
+    }
+
+    @Override
+    public List<GroupResponse> getAllGroups() {
+        List<Group> groups = repository.findAll();
         return mapper.map(groups);
     }
 

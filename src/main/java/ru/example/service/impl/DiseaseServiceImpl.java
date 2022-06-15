@@ -127,6 +127,11 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
+    public List<DiseaseInformation> getAllNotRejectedDiseases() {
+        return diseaseInformationRepository.findAllByStatusIsNot(DiseaseStatus.REJECTED);
+    }
+
+    @Override
     public List<DiseaseInformation> getNotRejectedDiseasesByInstitute(String instituteId) {
         List<DiseaseInformation> notRejectedDiseasesInfo = diseaseInformationRepository.findAllByStatusIsNot(DiseaseStatus.REJECTED);
         return getDiseaseFromNeedInstitute(notRejectedDiseasesInfo, instituteId);
@@ -145,7 +150,7 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
-    public List<DiseaseInformation> getDiseasesInStatus(DiseaseStatus status) {
+    public List<DiseaseInformation> getAllDiseasesInStatus(DiseaseStatus status) {
         return diseaseInformationRepository.findAllByStatus(status);
     }
 
@@ -174,9 +179,19 @@ public class DiseaseServiceImpl implements DiseaseService {
     }
 
     @Override
+    public List<DiseaseInformation> getAllRecoverTodayDiseases() {
+        return diseaseInformationRepository.findAllByDateOfRecoveryEquals(LocalDate.now());
+    }
+
+    @Override
     public List<DiseaseInformation> getSickTodayDiseasesByInstitute(String instituteId) {
         List<DiseaseInformation> diseaseInformationList = diseaseInformationRepository.findAllByDateOfDiseaseEquals(LocalDate.now());
         return getDiseaseFromNeedInstitute(diseaseInformationList, instituteId);
+    }
+
+    @Override
+    public List<DiseaseInformation> getAllSickTodayDiseases() {
+        return diseaseInformationRepository.findAllByDateOfDiseaseEquals(LocalDate.now());
     }
 
     @Override

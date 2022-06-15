@@ -10,7 +10,7 @@ import ru.example.dao.entity.institute.Institute;
 import ru.example.dao.entity.user.User;
 import ru.example.dto.response.*;
 import ru.example.dto.response.graphics.CountOfDiseasesByDays;
-import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfo;
+import ru.example.dto.response.additionalInfo.DecanatAdditionalInfo;
 import ru.example.dto.response.graphics.UniversityPartCountOfSick;
 import ru.example.dto.response.graphics.DiseaseTypeCountOfSick;
 import ru.example.error.ApiException;
@@ -22,7 +22,6 @@ import ru.example.service.*;
 
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -44,7 +43,7 @@ public class DecanatServiceImpl implements DecanatService {
     public List<DiseaseInfoResponse> getProcessedDiseasesByInsitute(JwtUser jwtUser) {
 
         List<DiseaseInformation> processedDiseases = diseaseService
-                .getDiseasesInStatus(DiseaseStatus.PROCESSED);
+                .getAllDiseasesInStatus(DiseaseStatus.PROCESSED);
 
         User decanatUser = getUserByLogin(jwtUser.getLogin());
         String decanatInstituteId = getDecanatInstituteId(decanatUser);
@@ -56,13 +55,13 @@ public class DecanatServiceImpl implements DecanatService {
 
     @Override
     public List<DiseaseInfoResponse> getActiveDiseasesByInstitute(JwtUser jwtUser) {
-        List<DiseaseInformation> processedDiseases = diseaseService
-                .getDiseasesInStatus(DiseaseStatus.ACTIVE);
+        List<DiseaseInformation> activeDiseases = diseaseService
+                .getAllDiseasesInStatus(DiseaseStatus.ACTIVE);
 
         User decanatUser = getUserByLogin(jwtUser.getLogin());
         String decanatInstituteId = getDecanatInstituteId(decanatUser);
 
-        List<DiseaseInformation> diseaseFromNeedInstitute = diseaseService.getDiseaseFromNeedInstitute(processedDiseases, decanatInstituteId);
+        List<DiseaseInformation> diseaseFromNeedInstitute = diseaseService.getDiseaseFromNeedInstitute(activeDiseases, decanatInstituteId);
 
         return diseaseInfoResponseMapper.map(diseaseFromNeedInstitute);
     }
@@ -166,29 +165,6 @@ public class DecanatServiceImpl implements DecanatService {
         List<DiseaseInformation> diseaseInformationList = diseaseService.getDiseasesInStatusByInstitute(DiseaseStatus.ACTIVE, instituteId);
 
         return graphicsService.buildCountOfDiseasesByType(diseaseInformationList);
-    }
-
-    private List<UniversityPartCountOfSick> getDepartmentsCountOfSicks(UserInfoDto userInfoDto) {
-        String instituteId = getDecanatUserInstituteId(userInfoDto);
-
-        List<DepartmentResponse> departments = departmentService.getAllDepartmentsByInstituteId(instituteId);
-
-        return Optional.ofNullable(departments)
-                .orElse(Collections.emptyList())
-                .stream()
-                .map(this::buildDepartmentCountOfSick)
-                .collect(Collectors.toList());
-    }
-
-
-    private UniversityPartCountOfSick buildDepartmentCountOfSick(DepartmentResponse department) {
-        List<DiseaseInformation> diseaseInformationList = diseaseService.getDiseasesInStatusByDepartment(DiseaseStatus.ACTIVE, department.getId());
-
-        UniversityPartCountOfSick departmentCountOfSick = new UniversityPartCountOfSick();
-        departmentCountOfSick.setName(department.getShortName());
-        departmentCountOfSick.setCountOfSick(diseaseInformationList.size());
-
-        return departmentCountOfSick;
     }
 
     private String getCountOfSickNowInInstitute(UserInfoDto userInfoDto) {

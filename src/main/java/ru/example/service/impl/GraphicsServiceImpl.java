@@ -14,6 +14,7 @@ import ru.example.dto.request.creationService.InstituteRequest;
 import ru.example.dto.request.graphics.DepartmentGraphicRequest;
 import ru.example.dto.request.graphics.GroupGraphicRequest;
 import ru.example.dto.request.graphics.InstituteGraphicRequest;
+import ru.example.dto.request.graphics.UniversityGraphicRequest;
 import ru.example.dto.response.DepartmentResponse;
 import ru.example.dto.response.GroupResponse;
 import ru.example.dto.response.InstituteResponse;
@@ -24,10 +25,7 @@ import ru.example.error.ErrorContainer;
 import ru.example.mapper.UserInfoResponseDtoMapper;
 import ru.example.repository.UserRepository;
 import ru.example.security.jwt.JwtUser;
-import ru.example.service.DepartmentService;
-import ru.example.service.DiseaseService;
-import ru.example.service.GraphicsService;
-import ru.example.service.GroupService;
+import ru.example.service.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -49,8 +47,24 @@ public class GraphicsServiceImpl implements GraphicsService {
     private final DiseaseService diseaseService;
     private final GroupService groupService;
     private final DepartmentService departmentService;
+    private final InstituteService instituteService;
 
     private final UserInfoResponseDtoMapper userInfoResponseDtoMapper;
+
+    @Override
+    public UniversityGraphicInfo getUniversityGraphicInfo(UniversityGraphicRequest universityGraphicRequest, JwtUser jwtUser) {
+        UniversityGraphicInfo universityGraphicInfo = new UniversityGraphicInfo();
+
+        if (jwtUser.getRoles().contains(Role.RECTORAT)) {
+            CountOfDiseasesByDays countOfDiseasesByDays = buildCountOfDiseasesByDaysInUniversity(universityGraphicRequest);
+            List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = buildCountOfDiseasesByTypeInUniversity();
+
+            universityGraphicInfo.setCountOfDiseasesByDays(countOfDiseasesByDays);
+            universityGraphicInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
+        }
+
+        return universityGraphicInfo;
+    }
 
     @Override
     public GroupGraphicInfo getGroupGraphicInfo(GroupGraphicRequest groupGraphicRequest, JwtUser jwtUser) {
@@ -59,6 +73,10 @@ public class GraphicsServiceImpl implements GraphicsService {
 
         if (user.getRoles().contains(Role.DECANAT)) {
             return buildDecanatGroupGraphicInfo(userInfoDto, groupGraphicRequest);
+        }
+
+        if (user.getRoles().contains(Role.RECTORAT)) {
+            return buildRectoratGroupGraphicInfo(userInfoDto, groupGraphicRequest);
         }
 
         return new GroupGraphicInfo();
@@ -73,6 +91,10 @@ public class GraphicsServiceImpl implements GraphicsService {
             return buildDecanatDepartmentGraphicInfo(userInfoDto, departmentGraphicRequest);
         }
 
+        if (user.getRoles().contains(Role.RECTORAT)) {
+            return buildRectoratDepartmentGraphicInfo(userInfoDto, departmentGraphicRequest);
+        }
+
         return new DepartmentGraphicInfo();
     }
 
@@ -83,6 +105,10 @@ public class GraphicsServiceImpl implements GraphicsService {
 
         if (user.getRoles().contains(Role.DECANAT)) {
             return buildDecanatInstituteGraphicInfo(userInfoDto, instituteGraphicRequest);
+        }
+
+        if (user.getRoles().contains(Role.RECTORAT)) {
+            return buildRectoratInstituteGraphicInfo(userInfoDto, instituteGraphicRequest);
         }
 
         return new InstituteGraphicInfo();
@@ -100,12 +126,41 @@ public class GraphicsServiceImpl implements GraphicsService {
         return instituteGraphicInfo;
     }
 
+    private InstituteGraphicInfo buildRectoratInstituteGraphicInfo(UserInfoDto userInfoDto, InstituteGraphicRequest instituteGraphicRequest) {
+        InstituteGraphicInfo instituteGraphicInfo = new InstituteGraphicInfo();
+
+        CountOfDiseasesByDays countOfDiseasesByDays = buildCountOfDiseasesByDaysInInstitute(instituteGraphicRequest);
+        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = buildCountOfDiseasesByTypeInInstitute(instituteGraphicRequest);
+        List<UniversityPartCountOfSick> instituteCountOfSicks = buildInstituteCountOfSicksForRectorat();
+
+
+        instituteGraphicInfo.setCountOfDiseasesByDays(countOfDiseasesByDays);
+        instituteGraphicInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
+        instituteGraphicInfo.setUniversityPartCountOfSicks(instituteCountOfSicks);
+
+        return instituteGraphicInfo;
+    }
+
     private DepartmentGraphicInfo buildDecanatDepartmentGraphicInfo(UserInfoDto userInfoDto, DepartmentGraphicRequest departmentGraphicRequest) {
         DepartmentGraphicInfo departmentGraphicInfo = new DepartmentGraphicInfo();
 
         CountOfDiseasesByDays countOfDiseasesByDays = buildCountOfDiseasesByDaysInDepartment(departmentGraphicRequest);
         List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = buildCountOfDiseasesByTypeInDepartment(departmentGraphicRequest);
         List<UniversityPartCountOfSick> departmentsCountOfSicks = buildDepartmentCountOfSicksForDecanat(userInfoDto);
+
+        departmentGraphicInfo.setCountOfDiseasesByDays(countOfDiseasesByDays);
+        departmentGraphicInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
+        departmentGraphicInfo.setUniversityPartCountOfSicks(departmentsCountOfSicks);
+
+        return departmentGraphicInfo;
+    }
+
+    private DepartmentGraphicInfo buildRectoratDepartmentGraphicInfo(UserInfoDto userInfoDto, DepartmentGraphicRequest departmentGraphicRequest) {
+        DepartmentGraphicInfo departmentGraphicInfo = new DepartmentGraphicInfo();
+
+        CountOfDiseasesByDays countOfDiseasesByDays = buildCountOfDiseasesByDaysInDepartment(departmentGraphicRequest);
+        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = buildCountOfDiseasesByTypeInDepartment(departmentGraphicRequest);
+        List<UniversityPartCountOfSick> departmentsCountOfSicks = buildDepartmentCountOfSicksForRectorat();
 
         departmentGraphicInfo.setCountOfDiseasesByDays(countOfDiseasesByDays);
         departmentGraphicInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
@@ -134,6 +189,15 @@ public class GraphicsServiceImpl implements GraphicsService {
         return getCountOfDiseasesByDays(diseaseInformationByGroup, startDate, endDate);
     }
 
+    private CountOfDiseasesByDays buildCountOfDiseasesByDaysInUniversity(UniversityGraphicRequest universityGraphicRequest) {
+        LocalDate startDate = universityGraphicRequest.getStartDate();
+        LocalDate endDate = universityGraphicRequest.getEndDate();
+
+        List<DiseaseInformation> diseaseInformationByGroup = diseaseService.getAllNotRejectedDiseases();
+
+        return getCountOfDiseasesByDays(diseaseInformationByGroup, startDate, endDate);
+    }
+
     private GroupGraphicInfo buildDecanatGroupGraphicInfo(UserInfoDto userInfoDto, GroupGraphicRequest groupGraphicRequest) {
 
         GroupGraphicInfo groupGraphicInfo = new GroupGraphicInfo();
@@ -141,6 +205,20 @@ public class GraphicsServiceImpl implements GraphicsService {
         CountOfDiseasesByDays countOfDiseasesByDays = buildCountOfDiseasesByDaysInGroup(groupGraphicRequest);
         List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = buildCountOfDiseasesByTypeInGroup(groupGraphicRequest);
         List<UniversityPartCountOfSick> groupsCountOfSicks = buildGroupsCountOfSicksForDecanat(userInfoDto);
+
+        groupGraphicInfo.setCountOfDiseasesByDays(countOfDiseasesByDays);
+        groupGraphicInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
+        groupGraphicInfo.setUniversityPartCountOfSicks(groupsCountOfSicks);
+
+        return groupGraphicInfo;
+    }
+
+    private GroupGraphicInfo buildRectoratGroupGraphicInfo(UserInfoDto userInfoDto, GroupGraphicRequest groupGraphicRequest) {
+        GroupGraphicInfo groupGraphicInfo = new GroupGraphicInfo();
+
+        CountOfDiseasesByDays countOfDiseasesByDays = buildCountOfDiseasesByDaysInGroup(groupGraphicRequest);
+        List<DiseaseTypeCountOfSick> diseaseTypeCountOfSicks = buildCountOfDiseasesByTypeInGroup(groupGraphicRequest);
+        List<UniversityPartCountOfSick> groupsCountOfSicks = buildGroupsCountOfSicksForRectorat();
 
         groupGraphicInfo.setCountOfDiseasesByDays(countOfDiseasesByDays);
         groupGraphicInfo.setDiseaseTypeCountOfSicks(diseaseTypeCountOfSicks);
@@ -157,9 +235,28 @@ public class GraphicsServiceImpl implements GraphicsService {
         return getDepartmentCountOfSicks(departments);
     }
 
+    private List<UniversityPartCountOfSick> buildDepartmentCountOfSicksForRectorat() {
+        List<DepartmentResponse> departments = departmentService.getAllDepartments();
+
+        return getDepartmentCountOfSicks(departments);
+    }
+
+    @Override
+    public List<UniversityPartCountOfSick> buildInstituteCountOfSicksForRectorat() {
+        List<InstituteResponse> institutes = instituteService.getAllInstitutes();
+
+        return getInstituteCountOfSicks(institutes);
+    }
+
     private List<UniversityPartCountOfSick> buildGroupsCountOfSicksForDecanat(UserInfoDto userInfoDto) {
         String instituteId = getDecanatInstituteId(userInfoDto);
         List<GroupResponse> groups = groupService.getAllGroupsByInstituteId(instituteId);
+
+        return getGroupsCountOfSicks(groups);
+    }
+
+    private List<UniversityPartCountOfSick> buildGroupsCountOfSicksForRectorat() {
+        List<GroupResponse> groups = groupService.getAllGroups();
 
         return getGroupsCountOfSicks(groups);
     }
@@ -169,6 +266,14 @@ public class GraphicsServiceImpl implements GraphicsService {
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(this::buildDepartmentCountOfSick)
+                .collect(Collectors.toList());
+    }
+
+    private List<UniversityPartCountOfSick> getInstituteCountOfSicks(List<InstituteResponse> institutes) {
+        return Optional.ofNullable(institutes)
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::buildInstituteCountOfSick)
                 .collect(Collectors.toList());
     }
 
@@ -187,6 +292,16 @@ public class GraphicsServiceImpl implements GraphicsService {
 
         UniversityPartCountOfSick departmentCountOfSick = new UniversityPartCountOfSick();
         departmentCountOfSick.setName(department.getShortName());
+        departmentCountOfSick.setCountOfSick(diseaseInformationList.size());
+
+        return departmentCountOfSick;
+    }
+
+    private UniversityPartCountOfSick buildInstituteCountOfSick(InstituteResponse institute) {
+        List<DiseaseInformation> diseaseInformationList = diseaseService.getDiseasesInStatusByInstitute(DiseaseStatus.ACTIVE, institute.getId());
+
+        UniversityPartCountOfSick departmentCountOfSick = new UniversityPartCountOfSick();
+        departmentCountOfSick.setName(institute.getShortName());
         departmentCountOfSick.setCountOfSick(diseaseInformationList.size());
 
         return departmentCountOfSick;
@@ -212,6 +327,12 @@ public class GraphicsServiceImpl implements GraphicsService {
     private List<DiseaseTypeCountOfSick> buildCountOfDiseasesByTypeInDepartment(DepartmentGraphicRequest departmentGraphicRequest) {
         String departmentId = getDepartmentIdFromDepartmentGraphicRequest(departmentGraphicRequest);
         List<DiseaseInformation> diseaseInformationList = diseaseService.getDiseasesInStatusByDepartment(DiseaseStatus.ACTIVE, departmentId);
+
+        return buildCountOfDiseasesByType(diseaseInformationList);
+    }
+
+    private List<DiseaseTypeCountOfSick> buildCountOfDiseasesByTypeInUniversity() {
+        List<DiseaseInformation> diseaseInformationList = diseaseService.getAllDiseasesInStatus(DiseaseStatus.ACTIVE);
 
         return buildCountOfDiseasesByType(diseaseInformationList);
     }

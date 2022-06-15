@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface DepartmentService {
     List<DepartmentResponse> getAllDepartmentsByInstituteId(String instituteId);
+
+    List<DepartmentResponse> getAllDepartments();
 }

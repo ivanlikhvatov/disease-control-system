@@ -33,6 +33,8 @@ api:
       /api/v1/decanat/**
     graphics:
       /api/v1/graphics/**
+    tables:
+      /api/v1/tables/**
     permitAll:
       /api/v1/auth/login,
       /api/v1/auth/registration,

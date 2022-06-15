@@ -5,5 +5,5 @@ import ru.example.dto.response.InstituteResponse;
 import java.util.List;
 
 public interface InstituteService {
-    List<InstituteResponse> getInstitutesInfo();
+    List<InstituteResponse> getAllInstitutes();
 }

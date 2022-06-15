@@ -32,7 +32,7 @@ public class AdminController {
 
     @GetMapping("/institutes")
     public List<InstituteResponse> getInstitutesInfo() {
-        return instituteService.getInstitutesInfo();
+        return instituteService.getAllInstitutes();
     }
 
     @GetMapping("/institutes/{instituteId}/directions")
@@ -47,7 +47,7 @@ public class AdminController {
 
     @GetMapping("/profiles/{profileId}/groups")
     public List<GroupResponse> getGroups(@PathVariable String profileId) {
-        return groupService.getAllGroups(profileId);
+        return groupService.getAllGroupsByProfileId(profileId);
     }
 
 }

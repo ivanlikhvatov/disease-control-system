@@ -1,12 +1,10 @@
 package ru.example.service;
 
-import ru.example.dao.entity.disease.DiseaseInformation;
-import ru.example.dao.entity.disease.DiseaseStatus;
 import ru.example.dto.response.DiseaseInfoResponse;
 import ru.example.dto.response.StatusResult;
 import ru.example.dto.response.UniversityInfo;
 import ru.example.dto.response.UserInfoDto;
-import ru.example.dto.response.decanatAdditionalInfo.DecanatAdditionalInfo;
+import ru.example.dto.response.additionalInfo.DecanatAdditionalInfo;
 import ru.example.security.jwt.JwtUser;
 
 import java.util.List;

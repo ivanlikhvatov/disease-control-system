@@ -6,9 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.example.dto.request.graphics.DepartmentGraphicRequest;
 import ru.example.dto.request.graphics.GroupGraphicRequest;
 import ru.example.dto.request.graphics.InstituteGraphicRequest;
+import ru.example.dto.request.graphics.UniversityGraphicRequest;
 import ru.example.dto.response.graphics.DepartmentGraphicInfo;
 import ru.example.dto.response.graphics.GroupGraphicInfo;
 import ru.example.dto.response.graphics.InstituteGraphicInfo;
+import ru.example.dto.response.graphics.UniversityGraphicInfo;
 import ru.example.security.jwt.JwtUser;
 import ru.example.service.GraphicsService;
 
@@ -35,4 +37,10 @@ public class GraphicsController {
     public InstituteGraphicInfo getInstituteGraphicInfo(@RequestBody @Valid InstituteGraphicRequest instituteGraphicRequest, @AuthenticationPrincipal JwtUser jwtUser) {
         return graphicsService.getInstituteGraphicInfo(instituteGraphicRequest, jwtUser);
     }
+
+    @PostMapping("/byUniversity")
+    public UniversityGraphicInfo getUniversityGraphicInfo(@RequestBody @Valid UniversityGraphicRequest universityGraphicRequest, @AuthenticationPrincipal JwtUser jwtUser) {
+        return graphicsService.getUniversityGraphicInfo(universityGraphicRequest, jwtUser);
+    }
+
 }
